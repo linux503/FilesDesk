@@ -1,44 +1,54 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Privacy — FilesDesk</title>
-  <meta name="description" content="FilesDesk privacy policy. Renaming stays on your Mac. Update checks use Sparkle.">
+  <title>隐私政策 — FilesDesk</title>
+  <meta name="description" content="FilesDesk 隐私说明。重命名在本地完成，更新通过 Sparkle 检查。">
   <link rel="icon" type="image/png" href="./assets/favicon-32.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,600;0,9..40,700&family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./styles.css">
 </head>
-<body>
+<body data-page="privacy">
   <header class="wrap site-header">
     <a class="brand" href="./">
-      <img src="./assets/icon.png" alt="">
+      <img src="./assets/icon.png" alt="FilesDesk">
       FilesDesk
     </a>
-    <nav>
-      <a href="./download.html">Download</a>
-      <a href="./faq.html">FAQ</a>
-      <a href="./privacy.html" aria-current="page">Privacy</a>
-      <a href="./changelog.html">Updates</a>
-    </nav>
+    <div class="header-right">
+      <nav>
+        <a href="./download.html" data-i18n="nav.download">下载</a>
+        <a href="./faq.html" data-i18n="nav.faq">常见问题</a>
+        <a href="./privacy.html" aria-current="page" data-i18n="nav.privacy">隐私</a>
+        <a href="./changelog.html" data-i18n="nav.changelog">更新</a>
+      </nav>
+      <div class="lang-switch" role="group" aria-label="Language">
+        <button type="button" data-lang-btn="zh" class="active">中文</button>
+        <button type="button" data-lang-btn="en">EN</button>
+      </div>
+    </div>
   </header>
+
   <main class="wrap page">
-    <h1>Privacy</h1>
-    <p>FilesDesk is a local utility. It does not create an account, and it does not upload your files.</p>
-    <p>File names, paths, presets, and rename history stay on your Mac, in the app sandbox. FilesDesk only reads and renames items you add yourself.</p>
-    <p>If automatic updates are on, Sparkle periodically requests the public update feed at this website and may download a signed app archive from GitHub Releases. That request includes standard HTTP metadata such as your app version. You can turn automatic checking off in Settings.</p>
-    <p>This site is static. It does not set tracking cookies or run an analytics account.</p>
-    <p>Questions: open an issue on <a href="https://github.com/linux503/FilesDesk">GitHub</a>.</p>
+    <h1 data-i18n="privacy.title">隐私政策</h1>
+    <p data-i18n="privacy.p1">FilesDesk 是本地工具，不创建账号，不上传你的文件。</p>
+    <p data-i18n="privacy.p2">文件名、路径、预设与重命名历史保存在你的 Mac 上（应用沙盒内）。仅对你主动添加的文件进行读取与重命名。</p>
+    <p data-i18n="privacy.p3">若开启自动更新，Sparkle 会定期请求本站的公开更新源，并可能从 GitHub Releases 下载已签名的安装包。请求包含应用版本等常规 HTTP 信息。可在「设置」中关闭自动检查。</p>
+    <p data-i18n="privacy.p4">本站为静态页面，不使用追踪 Cookie，也不接入第三方统计。</p>
+    <p><span data-i18n="privacy.p5">如有问题，请在 GitHub 提交 Issue。</span> <a href="https://github.com/linux503/FilesDesk">GitHub</a></p>
   </main>
+
   <footer class="wrap site-footer">
     <span>FilesDesk</span>
-    <div>
-      <a href="./privacy.html">Privacy</a>
-      <a href="./changelog.html">Changelog</a>
-      <a href="https://github.com/linux503/FilesDesk">GitHub</a>
+    <div class="links">
+      <a href="./privacy.html" data-i18n="footer.privacy">隐私</a>
+      <a href="./changelog.html" data-i18n="footer.changelog">更新</a>
+      <a href="https://github.com/linux503/FilesDesk" data-i18n="footer.github">GitHub</a>
     </div>
   </footer>
+  <script src="./i18n.js"></script>
+  <script src="./site.js"></script>
 </body>
 </html>

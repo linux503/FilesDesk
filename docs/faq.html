@@ -1,53 +1,63 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>FAQ — FilesDesk</title>
-  <meta name="description" content="Answers about FilesDesk renaming, undo, history, presets, and updates.">
+  <title>常见问题 — FilesDesk</title>
+  <meta name="description" content="FilesDesk 使用说明：预览、撤销、预设与在线更新。">
   <link rel="icon" type="image/png" href="./assets/favicon-32.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,600;0,9..40,700&family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./styles.css">
 </head>
-<body>
+<body data-page="faq">
   <header class="wrap site-header">
     <a class="brand" href="./">
-      <img src="./assets/icon.png" alt="">
+      <img src="./assets/icon.png" alt="FilesDesk">
       FilesDesk
     </a>
-    <nav>
-      <a href="./download.html">Download</a>
-      <a href="./faq.html" aria-current="page">FAQ</a>
-      <a href="./privacy.html">Privacy</a>
-      <a href="./changelog.html">Updates</a>
-    </nav>
+    <div class="header-right">
+      <nav>
+        <a href="./download.html" data-i18n="nav.download">下载</a>
+        <a href="./faq.html" aria-current="page" data-i18n="nav.faq">常见问题</a>
+        <a href="./privacy.html" data-i18n="nav.privacy">隐私</a>
+        <a href="./changelog.html" data-i18n="nav.changelog">更新</a>
+      </nav>
+      <div class="lang-switch" role="group" aria-label="Language">
+        <button type="button" data-lang-btn="zh" class="active">中文</button>
+        <button type="button" data-lang-btn="en">EN</button>
+      </div>
+    </div>
   </header>
+
   <main class="wrap page">
-    <h1>FAQ</h1>
+    <h1 data-i18n="faq.title">常见问题</h1>
     <dl class="faq">
-      <dt>Does preview rename files?</dt>
-      <dd>No. Preview only computes new names in memory. Disk writes start after validation, when you click Rename.</dd>
-      <dt>Can FilesDesk overwrite a file?</dt>
-      <dd>No. If a target name already exists, or two files would share a name, rename is blocked.</dd>
-      <dt>How does undo work?</dt>
-      <dd>Each successful batch is stored in History with the old and new paths. Undo restores the original names using the same two-phase rename.</dd>
-      <dt>What are presets?</dt>
-      <dd>A preset is a saved set of rules. Photography, Screenshots, E-commerce, and Documents ship built-in. You can save your own.</dd>
-      <dt>How do in-app updates work?</dt>
-      <dd>FilesDesk uses Sparkle. The app reads an update feed on this site and installs a signed build from GitHub Releases.</dd>
-      <dt>Is there an account?</dt>
-      <dd>No. There is no login, cloud sync, or telemetry account.</dd>
+      <dt data-i18n="faq.q1">预览会改文件吗？</dt>
+      <dd data-i18n="faq.a1">不会。预览只在内存中计算新文件名，只有点击「重命名」并通过校验后才会写入磁盘。</dd>
+      <dt data-i18n="faq.q2">会覆盖已有文件吗？</dt>
+      <dd data-i18n="faq.a2">不会。若目标名已存在，或批量结果出现重名，重命名会被阻止。</dd>
+      <dt data-i18n="faq.q3">撤销怎么用？</dt>
+      <dd data-i18n="faq.a3">每次成功重命名都会写入历史，记录原路径与新路径。可从完成提示或历史页撤销，恢复原名。</dd>
+      <dt data-i18n="faq.q4">预设是什么？</dt>
+      <dd data-i18n="faq.a4">预设是一组可复用的规则模板。内置摄影、截图、电商、文档等模板，也可保存自己的规则。</dd>
+      <dt data-i18n="faq.q5">如何在线更新？</dt>
+      <dd data-i18n="faq.a5">应用使用 Sparkle，读取本站 appcast.xml，并从 GitHub Releases 下载已签名的更新包。</dd>
+      <dt data-i18n="faq.q6">需要账号吗？</dt>
+      <dd data-i18n="faq.a6">不需要。无登录、无云同步、无账号体系。</dd>
     </dl>
   </main>
+
   <footer class="wrap site-footer">
     <span>FilesDesk</span>
-    <div>
-      <a href="./privacy.html">Privacy</a>
-      <a href="./changelog.html">Changelog</a>
-      <a href="https://github.com/linux503/FilesDesk">GitHub</a>
+    <div class="links">
+      <a href="./privacy.html" data-i18n="footer.privacy">隐私</a>
+      <a href="./changelog.html" data-i18n="footer.changelog">更新</a>
+      <a href="https://github.com/linux503/FilesDesk" data-i18n="footer.github">GitHub</a>
     </div>
   </footer>
+  <script src="./i18n.js"></script>
+  <script src="./site.js"></script>
 </body>
 </html>

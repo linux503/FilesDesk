@@ -9,18 +9,15 @@ async function latestRelease() {
     const data = await response.json();
     const zip = (data.assets || []).find((asset) => asset.name.endsWith(".zip"));
     const href = zip ? zip.browser_download_url : data.html_url;
-    nodes.forEach((node) => {
-      node.href = href;
-      if (node.dataset.version) node.dataset.version = data.tag_name;
-    });
+    nodes.forEach((node) => { node.href = href; });
     document.querySelectorAll("[data-latest-tag]").forEach((node) => {
       node.textContent = data.tag_name.replace(/^v/, "");
     });
-  } catch (error) {
+  } catch {
     nodes.forEach((node) => {
       node.href = `https://github.com/${REPO}/releases`;
     });
   }
 }
 
-latestRelease();
+document.addEventListener("DOMContentLoaded", latestRelease);

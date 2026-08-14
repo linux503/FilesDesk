@@ -1,13 +1,19 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="none">
   <defs>
-    <linearGradient id="board" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#2F4554"/>
-      <stop offset="1" stop-color="#20303C"/>
+    <linearGradient id="bg" x1="0.5" y1="0" x2="0.5" y2="1">
+      <stop offset="0" stop-color="#1C6B94"/>
+      <stop offset="1" stop-color="#0F3D61"/>
+    </linearGradient>
+    <linearGradient id="badge" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#FAB847"/>
+      <stop offset="1" stop-color="#EB8C1F"/>
     </linearGradient>
   </defs>
-  <rect x="82" y="82" width="860" height="860" rx="225" fill="url(#board)"/>
-  <rect x="348" y="307" width="410" height="471" rx="46" fill="#E8E5DC"/>
-  <rect x="246" y="205" width="450" height="512" rx="51" fill="#F8F6F0" stroke="#C4A35A" stroke-width="22"/>
-  <path d="M328 430h270M328 507h270M328 584h220" stroke="#2F4554" stroke-opacity=".28" stroke-width="18" stroke-linecap="round"/>
-  <path d="M635 328h164m-70 56l70-56-70-56" stroke="#C4A35A" stroke-width="39" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="56" y="56" width="912" height="912" rx="230" fill="url(#bg)"/>
+  <rect x="180" y="230" width="460" height="530" rx="50" fill="#EEF2F6" opacity=".55"/>
+  <rect x="150" y="190" width="480" height="550" rx="52" fill="#F0F4F8" opacity=".85"/>
+  <rect x="120" y="150" width="520" height="570" rx="54" fill="#FAFCFF" stroke="#3390B8" stroke-width="12"/>
+  <path d="M200 330h300M200 410h260M200 490h220" stroke="#24384A" stroke-opacity=".28" stroke-width="18" stroke-linecap="round"/>
+  <circle cx="740" cy="700" r="175" fill="url(#badge)"/>
+  <path d="M680 700h120m-55 50l55-50-55-50" stroke="#fff" stroke-width="42" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>

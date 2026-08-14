@@ -1,0 +1,91 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+  pages: write
+
+jobs:
+  release:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Test
+        run: |
+          xcodebuild test \
+            -project FilesDesk.xcodeproj \
+            -scheme FilesDesk \
+            -destination "platform=macOS" \
+            CODE_SIGN_IDENTITY=-
+
+      - name: Build
+        run: |
+          xcodebuild build \
+            -project FilesDesk.xcodeproj \
+            -scheme FilesDesk \
+            -destination "platform=macOS" \
+            -configuration Release \
+            -derivedDataPath build/DerivedData \
+            CODE_SIGN_IDENTITY=-
+          mkdir -p build/dist
+          VERSION="${GITHUB_REF_NAME#v}"
+          ditto -c -k --keepParent \
+            build/DerivedData/Build/Products/Release/FilesDesk.app \
+            "build/dist/FilesDesk-${VERSION}.zip"
+
+      - name: Sign Sparkle update
+        env:
+          SPARKLE_EDDSA_PRIVATE_KEY: ${{ secrets.SPARKLE_EDDSA_PRIVATE_KEY }}
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          ZIP="build/dist/FilesDesk-${VERSION}.zip"
+          printf '%s\n' "$SPARKLE_EDDSA_PRIVATE_KEY" > sparkle/eddsa-private.key
+          python3 -m pip install --user pynacl
+          SIG="$(python3 scripts/sign-update.py sparkle/eddsa-private.key "$ZIP")"
+          LENGTH="$(stat -f%z "$ZIP")"
+          echo "SPARKLE_SIG=$SIG" >> "$GITHUB_ENV"
+          echo "SPARKLE_LENGTH=$LENGTH" >> "$GITHUB_ENV"
+          rm -f sparkle/eddsa-private.key
+
+      - name: GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          ZIP="build/dist/FilesDesk-${VERSION}.zip"
+          NOTES="$(awk "/^## $VERSION/{flag=1;next}/^## /{flag=0}flag" CHANGELOG.md)"
+          gh release create "$GITHUB_REF_NAME" "$ZIP" \
+            --title "FilesDesk $VERSION" \
+            --notes "${NOTES:-FilesDesk $VERSION}"
+
+      - name: Sync appcast
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          BUILD="$(python3 - <<'PY'
+          import re, pathlib
+          text = pathlib.Path("FilesDesk.xcodeproj/project.pbxproj").read_text()
+          print(re.search(r"CURRENT_PROJECT_VERSION = ([0-9]+);", text).group(1))
+          PY
+          )"
+          URL="https://github.com/${GITHUB_REPOSITORY}/releases/download/${GITHUB_REF_NAME}/FilesDesk-${VERSION}.zip"
+          python3 scripts/update-appcast.py \
+            --tag "$GITHUB_REF_NAME" \
+            --marketing "$VERSION" \
+            --build "$BUILD" \
+            --url "$URL" \
+            --signature "$SPARKLE_SIG" \
+            --length "$SPARKLE_LENGTH"
+          git config user.name "github-actions"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/appcast.xml
+          git commit -m "Sync Sparkle feed for $GITHUB_REF_NAME" || exit 0
+          git push origin HEAD:main
