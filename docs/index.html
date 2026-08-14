@@ -13,7 +13,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./styles.css?v=7">
+  <link rel="stylesheet" href="./styles.css?v=9">
 </head>
 <body data-page="home" data-current-app="filesdesk">
   <div class="atmosphere" aria-hidden="true"></div>
@@ -48,7 +48,7 @@
       <div class="wrap hero-copy">
         <h1>FilesDesk</h1>
         <p class="lede" data-i18n="home.lede">一次重命名上千个文件</p>
-        <p class="sub" data-i18n="home.sub">拖拽导入文件或文件夹，组合 9 种规则，实时预览后再写入。原生 Mac 工具，绝不覆盖已有文件。</p>
+        <p class="sub" data-i18n="home.sub">拖拽导入文件或文件夹，组合 9 种规则，输入即预览。智能建议、12 套预设、文件夹编号。原生 Mac 工具，绝不覆盖已有文件。</p>
         <div class="cta-row">
           <div class="cta-download">
             <a class="button" data-download href="https://github.com/linux503/FilesDesk/releases" data-i18n="home.cta">下载 Mac 版</a>
@@ -72,22 +72,22 @@
               <div class="nav-item"><span class="nav-ico"></span><span data-i18n="mock.settings">设置</span></div>
             </aside>
             <div class="files">
-              <div class="row"><span class="kind">文件夹</span><span class="old">旅行</span><span class="new">Taipei_旅行</span></div>
-              <div class="row"><span class="kind">JPG</span><span class="old">IMG_001.jpg</span><span class="new">Taipei_001.jpg</span></div>
-              <div class="row"><span class="kind">JPG</span><span class="old">IMG_002.jpg</span><span class="new">Taipei_002.jpg</span></div>
-              <div class="row"><span class="kind">JPG</span><span class="old">IMG_003.jpg</span><span class="new">Taipei_003.jpg</span></div>
-              <div class="row"><span class="kind">JPG</span><span class="old">IMG_004.jpg</span><span class="new">Taipei_004.jpg</span></div>
+              <div class="row"><span class="kind">文件夹</span><span class="old">4000-AA-1 (16)</span><span class="new">4001-AA-1 (16)</span></div>
+              <div class="row"><span class="kind">文件夹</span><span class="old">4000-AA-1 (219)</span><span class="new">4002-AA-1 (219)</span></div>
+              <div class="row"><span class="kind">JPG</span><span class="old">1.jpg</span><span class="new">1.jpg</span></div>
+              <div class="row"><span class="kind">JPG</span><span class="old">2.jpg</span><span class="new">2.jpg</span></div>
+              <div class="row"><span class="kind">TXT</span><span class="old">data.txt</span><span class="new">data.txt</span></div>
             </div>
             <aside class="rules">
-              <div class="nav-item"><span data-i18n="mock.remove">删除 IMG_</span></div>
-              <div class="nav-item active"><span data-i18n="mock.prefix">前缀 Taipei_</span></div>
-              <div class="nav-item"><span data-i18n="mock.numbering">编号</span></div>
+              <div class="nav-item hint" data-i18n="mock.suggest">建议：去掉拷贝编号</div>
+              <div class="nav-item" data-i18n="mock.remove">删除 4000</div>
+              <div class="nav-item active" data-i18n="mock.numbering">编号 4001</div>
             </aside>
           </div>
           <div class="app-foot">
-            <span data-i18n="mock.files">128 个项目</span>
+            <span data-i18n="mock.files">61 个项目</span>
             <span class="status" data-i18n="mock.ready">就绪</span>
-            <button class="rename-btn" type="button" data-i18n="mock.renameBtn">重命名 128</button>
+            <button class="rename-btn" type="button" data-i18n="mock.renameBtn">重命名 13</button>
           </div>
         </div>
       </div>
@@ -97,8 +97,8 @@
 
     <section class="wrap proof">
       <div><strong data-i18n="home.statRules">9</strong><span data-i18n="home.statRulesLabel">种规则</span></div>
-      <div><strong data-i18n="home.statFiles">10K+</strong><span data-i18n="home.statFilesLabel">文件规模</span></div>
-      <div><strong data-i18n="home.statFolders">文件夹</strong><span data-i18n="home.statFoldersLabel">也可重命名</span></div>
+      <div><strong data-i18n="home.statFiles">12</strong><span data-i18n="home.statFilesLabel">套预设</span></div>
+      <div><strong data-i18n="home.statFolders">文件夹</strong><span data-i18n="home.statFoldersLabel">也可连续编号</span></div>
       <div><strong data-i18n="home.statSafe">0</strong><span data-i18n="home.statSafeLabel">覆盖已有文件</span></div>
     </section>
 
@@ -112,12 +112,12 @@
         <article>
           <span class="idx">01</span>
           <h3 data-i18n="home.pillar1Title">实时预览</h3>
-          <p data-i18n="home.pillar1Desc">规则一改，新文件名立刻更新。预览阶段不写磁盘，无需点击生成。</p>
+          <p data-i18n="home.pillar1Desc">规则一边输入，新名称一边更新。预览不写磁盘，不必点生成。</p>
         </article>
         <article>
           <span class="idx">02</span>
-          <h3 data-i18n="home.pillar2Title">规则组合</h3>
-          <p data-i18n="home.pillar2Desc">9 种规则可叠加、排序、启用/禁用。前缀 + 编号 + 日期，一次配好。</p>
+          <h3 data-i18n="home.pillar2Title">智能建议</h3>
+          <p data-i18n="home.pillar2Desc">识别相机文件、截图、拷贝编号和所在文件夹，一键套用规则。</p>
         </article>
         <article>
           <span class="idx">03</span>
@@ -137,7 +137,7 @@
         <div class="section-head">
           <span class="eyebrow" data-i18n="home.rulesEyebrow">重命名规则</span>
           <h2 data-i18n="home.rulesTitle">9 种规则，自由组合</h2>
-          <p class="section-lead" data-i18n="home.rulesLead">摄影、截图、电商 SKU、文档、文件夹——常见整理场景都能覆盖。</p>
+          <p class="section-lead" data-i18n="home.rulesLead">摄影、截图、电商、文档、视频、微信、文件夹——常见整理都能覆盖。</p>
         </div>
         <div class="rules-grid">
           <div class="rule-chip"><span class="rule-name" data-i18n="home.ruleReplace">替换</span><span class="rule-desc" data-i18n="home.ruleReplaceDesc">查找并替换文本</span></div>
@@ -173,7 +173,7 @@
         <article>
           <div class="flow-num">2</div>
           <h3 data-i18n="home.flow2Title">配置规则</h3>
-          <p data-i18n="home.flow2Desc">在右侧面板添加规则，列表实时显示新名称与状态。</p>
+          <p data-i18n="home.flow2Desc">添加规则或套用建议，列表马上显示新名称。⌘R 可刷新磁盘上的最新状态。</p>
         </article>
         <article>
           <div class="flow-num">3</div>
@@ -193,7 +193,8 @@
         <div><strong data-i18n="home.scene2">截图</strong><span>Screenshot → 2026-08-14_desk</span></div>
         <div><strong data-i18n="home.scene3">电商</strong><span>sku-001 · sku-002</span></div>
         <div><strong data-i18n="home.scene4">文档</strong><span>日期 + 标题格式</span></div>
-        <div><strong data-i18n="home.scene5">文件夹</strong><span>旅行 → Taipei_旅行</span></div>
+        <div><strong data-i18n="home.scene5">文件夹</strong><span>4000-AA → 4001、4002</span></div>
+        <div><strong data-i18n="home.scene6">微信</strong><span>mmexport → WeChat_日期</span></div>
       </div>
     </section>
 
@@ -209,11 +210,19 @@
         </div>
         <div>
           <dt data-i18n="home.bentoFolderTitle">文件与文件夹</dt>
-          <dd data-i18n="home.bentoFolderDesc">可只重命名文件夹，或只重命名其中的文件。底部范围切换：全部 / 文件 / 文件夹。</dd>
+          <dd data-i18n="home.bentoFolderDesc">可只重命名文件夹，或只重命名其中的文件。编号只对当前范围连续计数。底部范围：全部 / 文件 / 文件夹。</dd>
+        </div>
+        <div>
+          <dt data-i18n="home.bentoSmartTitle">智能建议</dt>
+          <dd data-i18n="home.bentoSmartDesc">根据文件名给出摄影、截图、拷贝编号、文件夹前缀等建议，点一下即可套用。</dd>
+        </div>
+        <div>
+          <dt data-i18n="home.bentoRefreshTitle">刷新状态</dt>
+          <dd data-i18n="home.bentoRefreshDesc">⌘R 从磁盘重新读取名称、权限。已删除的项目会从列表去掉，再立刻更新预览。</dd>
         </div>
         <div>
           <dt data-i18n="home.bentoPresetTitle">预设模板</dt>
-          <dd data-i18n="home.bentoPresetDesc">内置摄影、截图、电商、文档模板。也可保存自己的规则组合。</dd>
+          <dd data-i18n="home.bentoPresetDesc">12 套内置：摄影、截图、电商、文档、视频、微信图片、去掉拷贝编号、日期前缀、顺序编号等。也可保存自己的规则。</dd>
         </div>
         <div>
           <dt data-i18n="home.bentoPerfTitle">大规模处理</dt>
@@ -252,7 +261,7 @@
       <div class="download-band">
         <div>
           <h2 data-i18n="home.downloadTitle">下载 FilesDesk</h2>
-          <p data-i18n="home.downloadLead">macOS 14 及以上 · 开源免费 · Apple 芯片与 Intel</p>
+          <p data-i18n="home.downloadLead">macOS 14 及以上 · 开源免费 · Apple 芯片与 Intel · 当前 1.1.1</p>
         </div>
         <div class="cta-download">
           <a class="button" data-download href="./download.html" data-i18n="home.downloadCta">获取最新版本</a>
@@ -271,7 +280,7 @@
     </div>
   </footer>
   <script src="./more-apps.js"></script>
-  <script src="./i18n.js?v=8"></script>
+  <script src="./i18n.js?v=9"></script>
   <script src="./site.js?v=8"></script>
 </body>
 </html>
