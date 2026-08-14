@@ -6,6 +6,18 @@
     <description>FilesDesk updates</description>
     <language>en</language>
     <item>
+      <title>FilesDesk 1.1.1</title>
+      <pubDate>Fri, 14 Aug 2026 15:18:53 +0000</pubDate>
+      <sparkle:version>3</sparkle:version>
+      <sparkle:shortVersionString>1.1.1</sparkle:shortVersionString>
+      <sparkle:releaseNotesLink>https://linux503.github.io/FilesDesk/changelog.html#1.1.1</sparkle:releaseNotesLink>
+      <enclosure
+        url="https://github.com/linux503/FilesDesk/releases/download/v1.1.1/FilesDesk-1.1.1.zip"
+        sparkle:edSignature="5wXGzY0V3Wl3zS2iNs5whpopYfVtVfelqCY0+FNh9GxnIrcySLB6t1v4eJcZug7CxwKtdBX+JpldxLa0VPImBw=="
+        length="3077547"
+        type="application/octet-stream" />
+    </item>
+    <item>
       <title>FilesDesk 1.1.0</title>
       <pubDate>Fri, 14 Aug 2026 14:48:08 +0000</pubDate>
       <sparkle:version>2</sparkle:version>
