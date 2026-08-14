@@ -28,6 +28,7 @@ final class FileItem: Identifiable {
     var status: FileItemStatus
     var statusMessage: String
     var hasSecurityAccess: Bool
+    var isDirectory: Bool
 
     init(
         id: UUID = UUID(),
@@ -45,7 +46,8 @@ final class FileItem: Identifiable {
         directoryWritable: Bool,
         status: FileItemStatus = .previewing,
         statusMessage: String = "",
-        hasSecurityAccess: Bool
+        hasSecurityAccess: Bool,
+        isDirectory: Bool = false
     ) {
         self.id = id
         self.originalURL = originalURL
@@ -63,6 +65,7 @@ final class FileItem: Identifiable {
         self.status = status
         self.statusMessage = statusMessage
         self.hasSecurityAccess = hasSecurityAccess
+        self.isDirectory = isDirectory
     }
 
     var proposedURL: URL {
@@ -80,8 +83,9 @@ final class FileItem: Identifiable {
             typeIdentifier: typeIdentifier,
             createdAt: createdAt,
             modifiedAt: modifiedAt,
-            directoryWritable: directoryWritable,
-            hasSecurityAccess: hasSecurityAccess
+            directoryWritable: directoryWritable || parentBookmark != nil || bookmark != nil,
+            hasSecurityAccess: hasSecurityAccess,
+            isDirectory: isDirectory
         )
     }
 }
@@ -98,6 +102,7 @@ struct FileSnapshot: Sendable, Equatable {
     let modifiedAt: Date
     let directoryWritable: Bool
     let hasSecurityAccess: Bool
+    var isDirectory: Bool = false
 
     var originalURL: URL { URL(fileURLWithPath: originalPath) }
     var directoryURL: URL { URL(fileURLWithPath: directoryPath) }
@@ -117,4 +122,5 @@ struct ImportedFile: Sendable {
     let parentBookmark: Data?
     let directoryWritable: Bool
     let hasSecurityAccess: Bool
+    let isDirectory: Bool
 }

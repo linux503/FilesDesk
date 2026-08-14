@@ -65,6 +65,19 @@ struct RenameEngineTests {
         let result = RenameEngine.apply(rules: [rule], to: "notes.pdf", context: context)
         #expect(result == "NOTES.pdf")
     }
+
+    @Test func folderNameKeepsWholeNameIncludingDots() {
+        var rule = RenameRule.make(.caseChange)
+        rule.parameters.caseStyle = .uppercase
+        let context = ApplyContext(index: 0, createdAt: .now, modifiedAt: .now, now: .now)
+        let result = RenameEngine.apply(
+            rules: [rule],
+            to: "Trip.2024",
+            context: context,
+            isDirectory: true
+        )
+        #expect(result == "TRIP.2024")
+    }
 }
 
 struct RenameValidatorTests {
@@ -119,5 +132,156 @@ struct RenameValidatorTests {
         let report = RenameValidator.validate(files: [first, second], proposedNames: names, rules: [])
         #expect(report.canRename == false)
         #expect(report.errorCount >= 2)
+    }
+
+    @Test func nestedFoldersCanRenameTogether() {
+        let root = "/tmp/filesdesk-\(UUID().uuidString)"
+        let parent = FileSnapshot(
+            id: UUID(),
+            originalName: "1",
+            proposedName: "1",
+            directoryPath: root,
+            originalPath: "\(root)/1",
+            fileSize: 0,
+            typeIdentifier: "public.folder",
+            createdAt: .now,
+            modifiedAt: .now,
+            directoryWritable: true,
+            hasSecurityAccess: true,
+            isDirectory: true
+        )
+        let child = FileSnapshot(
+            id: UUID(),
+            originalName: "1 (16)",
+            proposedName: "1 (16)",
+            directoryPath: "\(root)/1",
+            originalPath: "\(root)/1/1 (16)",
+            fileSize: 0,
+            typeIdentifier: "public.folder",
+            createdAt: .now,
+            modifiedAt: .now,
+            directoryWritable: true,
+            hasSecurityAccess: true,
+            isDirectory: true
+        )
+        let names = [
+            parent.id: "4000-AA-8-14-1",
+            child.id: "4000-AA-8-14-1 (16)"
+        ]
+        let report = RenameValidator.validate(files: [parent, child], proposedNames: names, rules: [])
+        #expect(report.canRename == true)
+        #expect(report.errorCount == 0)
+        #expect(report.changeCount == 2)
+    }
+
+    @Test func folderAndContainedFileCannotRenameTogether() {
+        let root = "/tmp/filesdesk-\(UUID().uuidString)"
+        let folder = FileSnapshot(
+            id: UUID(),
+            originalName: "Album",
+            proposedName: "Album",
+            directoryPath: root,
+            originalPath: "\(root)/Album",
+            fileSize: 0,
+            typeIdentifier: "public.folder",
+            createdAt: .now,
+            modifiedAt: .now,
+            directoryWritable: true,
+            hasSecurityAccess: true,
+            isDirectory: true
+        )
+        let file = FileSnapshot(
+            id: UUID(),
+            originalName: "photo.jpg",
+            proposedName: "photo.jpg",
+            directoryPath: "\(root)/Album",
+            originalPath: "\(root)/Album/photo.jpg",
+            fileSize: 1,
+            typeIdentifier: "public.jpeg",
+            createdAt: .now,
+            modifiedAt: .now,
+            directoryWritable: true,
+            hasSecurityAccess: true,
+            isDirectory: false
+        )
+        let names = [
+            folder.id: "4000-Album",
+            file.id: "4000-photo.jpg"
+        ]
+        let report = RenameValidator.validate(files: [folder, file], proposedNames: names, rules: [])
+        #expect(report.canRename == false)
+        #expect(report.errorCount >= 2)
+        #expect(report.firstErrorMessage?.contains("文件夹") == true)
+    }
+
+    @Test func unchangedItemsDoNotBlockOnPermission() {
+        let root = "/tmp/filesdesk-\(UUID().uuidString)"
+        let folder = FileSnapshot(
+            id: UUID(),
+            originalName: "Keep",
+            proposedName: "Keep",
+            directoryPath: root,
+            originalPath: "\(root)/Keep",
+            fileSize: 0,
+            typeIdentifier: "public.folder",
+            createdAt: .now,
+            modifiedAt: .now,
+            directoryWritable: false,
+            hasSecurityAccess: false,
+            isDirectory: true
+        )
+        let changing = FileSnapshot(
+            id: UUID(),
+            originalName: "a.txt",
+            proposedName: "a.txt",
+            directoryPath: root,
+            originalPath: "\(root)/a.txt",
+            fileSize: 1,
+            typeIdentifier: "public.text",
+            createdAt: .now,
+            modifiedAt: .now,
+            directoryWritable: true,
+            hasSecurityAccess: true
+        )
+        let names = [folder.id: "Keep", changing.id: "b.txt"]
+        let report = RenameValidator.validate(files: [folder, changing], proposedNames: names, rules: [])
+        #expect(report.canRename == true)
+        #expect(report.errorCount == 0)
+    }
+}
+
+struct SmartSuggestionTests {
+    @Test func detectsCameraPhotos() {
+        let suggestions = SmartSuggestionEngine.suggest(
+            names: ["IMG_001.jpg", "IMG_002.jpg", "DSC_003.jpg"],
+            isDirectory: [false, false, false],
+            parentNames: ["DCIM", "DCIM", "DCIM"],
+            currentRules: []
+        )
+        #expect(suggestions.contains { $0.id == "photography" })
+    }
+
+    @Test func detectsFinderCopyNumbers() {
+        let suggestions = SmartSuggestionEngine.suggest(
+            names: ["1 (16)", "1 (219)", "1 (213)", "1 (15)"],
+            isDirectory: [true, true, true, true],
+            parentNames: ["Work", "Work", "Work", "Work"],
+            currentRules: []
+        )
+        #expect(suggestions.contains { $0.id == "finder-copies" })
+        #expect(suggestions.contains { $0.id == "parent-prefix" })
+    }
+
+    @Test func skipsPrefixWhenAlreadySet() {
+        var prefix = RenameRule.make(.prefix)
+        prefix.parameters.affixText = "4000-AA-"
+        let suggestions = SmartSuggestionEngine.suggest(
+            names: ["a.txt", "b.txt"],
+            isDirectory: [false, false],
+            parentNames: ["Inbox", "Inbox"],
+            currentRules: [prefix]
+        )
+        #expect(!suggestions.contains { $0.id == "parent-prefix" })
+        #expect(!suggestions.contains { $0.id == "today-prefix" })
     }
 }

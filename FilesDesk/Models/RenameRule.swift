@@ -15,29 +15,29 @@ enum RuleKind: String, Codable, CaseIterable, Sendable, Identifiable {
 
     var title: String {
         switch self {
-        case .replace: "Replace Text"
-        case .prefix: "Prefix"
-        case .suffix: "Suffix"
-        case .remove: "Remove Text"
-        case .numbering: "Numbering"
-        case .caseChange: "Case"
-        case .date: "Date"
-        case .cleanup: "Cleanup"
-        case .regex: "Regex"
+        case .replace: "替换"
+        case .prefix: "前缀"
+        case .suffix: "后缀"
+        case .remove: "删除"
+        case .numbering: "编号"
+        case .caseChange: "大小写"
+        case .date: "日期"
+        case .cleanup: "清理"
+        case .regex: "正则"
         }
     }
 
     var subtitle: String {
         switch self {
-        case .replace: "Find and replace in the name"
-        case .prefix: "Insert text at the start"
-        case .suffix: "Insert text before the extension"
-        case .remove: "Delete matching text"
-        case .numbering: "Add sequential numbers"
-        case .caseChange: "Change letter case"
-        case .date: "Insert a date"
-        case .cleanup: "Trim and tidy the name"
-        case .regex: "Match with a regular expression"
+        case .replace: "查找并替换文件名中的文本"
+        case .prefix: "在文件名前插入"
+        case .suffix: "在扩展名前插入"
+        case .remove: "删除匹配的文本"
+        case .numbering: "添加顺序编号"
+        case .caseChange: "更改字母大小写"
+        case .date: "插入日期"
+        case .cleanup: "整理空格与符号"
+        case .regex: "使用正则表达式匹配"
         }
     }
 
@@ -65,9 +65,9 @@ enum NumberingPosition: String, Codable, CaseIterable, Sendable, Identifiable {
 
     var title: String {
         switch self {
-        case .prefix: "Before name"
-        case .suffix: "After name"
-        case .replace: "Replace name"
+        case .prefix: "文件名前"
+        case .suffix: "文件名后"
+        case .replace: "替换文件名"
         }
     }
 }
@@ -82,10 +82,10 @@ enum CaseStyle: String, Codable, CaseIterable, Sendable, Identifiable {
 
     var title: String {
         switch self {
-        case .lowercase: "lowercase"
-        case .uppercase: "UPPERCASE"
-        case .titleCase: "Title Case"
-        case .sentenceCase: "Sentence case"
+        case .lowercase: "小写"
+        case .uppercase: "大写"
+        case .titleCase: "标题格式"
+        case .sentenceCase: "句首大写"
         }
     }
 }
@@ -99,9 +99,9 @@ enum DateSource: String, Codable, CaseIterable, Sendable, Identifiable {
 
     var title: String {
         switch self {
-        case .current: "Current date"
-        case .created: "Date created"
-        case .modified: "Date modified"
+        case .current: "当前日期"
+        case .created: "创建日期"
+        case .modified: "修改日期"
         }
     }
 }
@@ -114,8 +114,8 @@ enum AffixPosition: String, Codable, CaseIterable, Sendable, Identifiable {
 
     var title: String {
         switch self {
-        case .prefix: "Before name"
-        case .suffix: "After name"
+        case .prefix: "文件名前"
+        case .suffix: "文件名后"
         }
     }
 }
@@ -201,14 +201,14 @@ struct RenameRule: Identifiable, Codable, Hashable, Sendable {
         let p = parameters
         switch kind {
         case .replace:
-            if p.findText.isEmpty { return "Find text to replace" }
+            if p.findText.isEmpty { return "输入要替换的文本" }
             return "“\(p.findText)” → “\(p.replacementText)”"
         case .prefix:
-            return p.affixText.isEmpty ? "Add a prefix" : "Start with “\(p.affixText)”"
+            return p.affixText.isEmpty ? "添加前缀" : "以“\(p.affixText)”开头"
         case .suffix:
-            return p.affixText.isEmpty ? "Add a suffix" : "End with “\(p.affixText)”"
+            return p.affixText.isEmpty ? "添加后缀" : "以“\(p.affixText)”结尾"
         case .remove:
-            return p.findText.isEmpty ? "Text to remove" : "Remove “\(p.findText)”"
+            return p.findText.isEmpty ? "输入要删除的文本" : "删除“\(p.findText)”"
         case .numbering:
             let sample = String(format: "%0\(max(1, p.numberingDigits))d", p.numberingStart)
             return "\(p.numberingPosition.title) · \(sample)"
@@ -218,15 +218,15 @@ struct RenameRule: Identifiable, Codable, Hashable, Sendable {
             return "\(p.datePosition.title) · \(p.dateFormat)"
         case .cleanup:
             var parts: [String] = []
-            if p.trimWhitespace { parts.append("Trim") }
-            if p.collapseWhitespace { parts.append("Collapse spaces") }
-            if p.spacesToUnderscores { parts.append("Spaces → _") }
-            if p.spacesToHyphens { parts.append("Spaces → -") }
-            if p.removeSpecialCharacters { parts.append("Strip symbols") }
-            if p.removeDiacritics { parts.append("Strip accents") }
-            return parts.isEmpty ? "No cleanup options" : parts.joined(separator: " · ")
+            if p.trimWhitespace { parts.append("去空格") }
+            if p.collapseWhitespace { parts.append("合并空格") }
+            if p.spacesToUnderscores { parts.append("空格 → _") }
+            if p.spacesToHyphens { parts.append("空格 → -") }
+            if p.removeSpecialCharacters { parts.append("去掉符号") }
+            if p.removeDiacritics { parts.append("去掉重音") }
+            return parts.isEmpty ? "未选择清理选项" : parts.joined(separator: " · ")
         case .regex:
-            return p.regexPattern.isEmpty ? "Pattern" : p.regexPattern
+            return p.regexPattern.isEmpty ? "正则模式" : p.regexPattern
         }
     }
 }

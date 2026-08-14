@@ -9,51 +9,69 @@ struct SettingsView: View {
         @Bindable var model = model
 
         Form {
-            Section("Rename") {
-                Toggle("Confirm before renaming", isOn: $model.confirmBeforeRename)
+            Section("重命名") {
+                Toggle("重命名前确认", isOn: $model.confirmBeforeRename)
                     .onChange(of: model.confirmBeforeRename) {
                         model.persistSettings()
                     }
             }
 
-            Section("Adding Files") {
-                Toggle("Include hidden files", isOn: $model.includeHiddenFiles)
+            Section("添加内容") {
+                Toggle("将文件夹加入重命名列表", isOn: $model.includeFolders)
+                    .onChange(of: model.includeFolders) {
+                        model.persistSettings()
+                    }
+                Toggle("导入文件夹内的文件", isOn: $model.includeFolderContents)
+                    .onChange(of: model.includeFolderContents) {
+                        model.persistSettings()
+                    }
+                Toggle("包含隐藏文件", isOn: $model.includeHiddenFiles)
                     .onChange(of: model.includeHiddenFiles) {
                         model.persistSettings()
                     }
-                Toggle("Include files in subfolders", isOn: $model.includeSubfolders)
+                Toggle("包含子文件夹中的内容", isOn: $model.includeSubfolders)
                     .onChange(of: model.includeSubfolders) {
                         model.persistSettings()
                     }
             }
 
-            Section("Updates") {
+            Section("更新") {
                 if let updater {
-                    Toggle("Check for updates automatically", isOn: autoCheckBinding(updater))
+                    Toggle("自动检查更新", isOn: autoCheckBinding(updater))
                     CheckForUpdatesView(updater: updater)
                 }
-                LabeledContent("Current version", value: appVersion)
+                LabeledContent("当前版本", value: appVersion)
             }
 
-            Section("Safety") {
-                LabeledContent("Overwrite existing files", value: "Never")
-                LabeledContent("Preview writes to disk", value: "Never")
-                LabeledContent("Rename without validation", value: "Never")
+            Section("安全") {
+                LabeledContent("覆盖已有文件", value: "永不")
+                LabeledContent("预览写入磁盘", value: "永不")
+                LabeledContent("跳过校验直接重命名", value: "永不")
             }
 
-            Section("About") {
-                LabeledContent("FilesDesk", value: "Smart File Renamer for Mac")
-                LabeledContent("Version", value: appVersion)
-                Text("Simple, native, safe, and fast. FilesDesk never overwrites a file that already exists.")
+            Section("关于") {
+                HStack(spacing: 14) {
+                    AppLogo(size: 56)
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("FilesDesk")
+                            .font(.title3.weight(.semibold))
+                        Text("Mac 智能批量重命名")
+                            .foregroundStyle(.secondary)
+                    }
+                    Spacer()
+                }
+                .padding(.vertical, 4)
+                LabeledContent("版本", value: appVersion)
+                Text("简单、原生、安全、快速。FilesDesk 绝不会覆盖已有文件。")
                     .foregroundStyle(.secondary)
-                Link("Website", destination: AppLinks.website)
+                Link("官网", destination: AppLinks.website)
                 Link("GitHub", destination: AppLinks.github)
-                Link("Privacy", destination: AppLinks.privacy)
+                Link("隐私政策", destination: AppLinks.privacy)
             }
         }
         .formStyle(.grouped)
         .frame(maxWidth: 720)
-        .navigationTitle("Settings")
+        .navigationTitle("设置")
         .focusedSceneValue(\.appModel, model)
         .padding()
     }

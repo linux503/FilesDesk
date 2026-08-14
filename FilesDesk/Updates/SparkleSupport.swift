@@ -35,7 +35,7 @@ struct CheckForUpdatesView: View {
     }
 
     var body: some View {
-        Button("Check for Updates…") {
+        Button("检查更新…") {
             updater.checkForUpdates()
         }
         .disabled(!model.canCheckForUpdates)

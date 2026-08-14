@@ -12,7 +12,7 @@ Simple, native, safe, and fast. FilesDesk batch-renames files on macOS with live
 - Releases: [GitHub Releases](https://github.com/linux503/FilesDesk/releases)
 - In-app updates: Sparkle + [appcast.xml](https://linux503.github.io/FilesDesk/appcast.xml)
 
-Requires macOS 14+.
+Requires macOS 14+. Universal Binary for Apple silicon (M series) and Intel.
 
 ## Features
 

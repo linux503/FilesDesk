@@ -3,6 +3,22 @@ import Foundation
 import Observation
 import SwiftData
 
+enum RenameScope: String, CaseIterable, Identifiable, Sendable {
+    case all
+    case files
+    case folders
+
+    var id: String { rawValue }
+
+    var title: String {
+        switch self {
+        case .all: "全部"
+        case .files: "文件"
+        case .folders: "文件夹"
+        }
+    }
+}
+
 struct RenameCompletion: Equatable, Sendable {
     var fileCount: Int
     var timestamp: Date
@@ -29,6 +45,9 @@ final class AppModel {
     var confirmBeforeRename = true
     var includeHiddenFiles = false
     var includeSubfolders = true
+    var includeFolders = true
+    var includeFolderContents = true
+    var renameScope: RenameScope = .all
     var showRenameConfirmation = false
 
     private var previewTask: Task<Void, Never>?
@@ -38,12 +57,21 @@ final class AppModel {
     private let confirmDefaultsKey = "filesdesk.confirmBeforeRename"
     private let hiddenDefaultsKey = "filesdesk.includeHiddenFiles"
     private let subfoldersDefaultsKey = "filesdesk.includeSubfolders"
+    private let foldersDefaultsKey = "filesdesk.includeFolders"
+    private let folderContentsDefaultsKey = "filesdesk.includeFolderContents"
+    private let scopeDefaultsKey = "filesdesk.renameScope"
 
     init(container: ModelContainer) {
         self.container = container
         confirmBeforeRename = UserDefaults.standard.object(forKey: confirmDefaultsKey) as? Bool ?? true
         includeHiddenFiles = UserDefaults.standard.bool(forKey: hiddenDefaultsKey)
         includeSubfolders = UserDefaults.standard.object(forKey: subfoldersDefaultsKey) as? Bool ?? true
+        includeFolders = UserDefaults.standard.object(forKey: foldersDefaultsKey) as? Bool ?? true
+        includeFolderContents = UserDefaults.standard.object(forKey: folderContentsDefaultsKey) as? Bool ?? true
+        if let raw = UserDefaults.standard.string(forKey: scopeDefaultsKey),
+           let scope = RenameScope(rawValue: raw) {
+            renameScope = scope
+        }
         if let data = UserDefaults.standard.data(forKey: rulesDefaultsKey),
            let saved = try? JSONDecoder().decode([RenameRule].self, from: data) {
             rules = saved
@@ -74,14 +102,42 @@ final class AppModel {
 
     var renameButtonTitle: String {
         let count = validation.changeCount
-        if count == 0 { return "Rename" }
-        return count == 1 ? "Rename 1 File" : "Rename \(count) Files"
+        if count == 0 { return "重命名" }
+        return "重命名 \(count) 个项目"
+    }
+
+    var smartSuggestions: [SmartSuggestion] {
+        SmartSuggestionEngine.suggest(
+            names: files.map(\.originalName),
+            isDirectory: files.map(\.isDirectory),
+            parentNames: files.map { $0.directoryURL.lastPathComponent },
+            currentRules: rules
+        )
+    }
+
+    func applySuggestion(_ suggestion: SmartSuggestion) {
+        let incoming = suggestion.rules.map { rule -> RenameRule in
+            var copy = rule
+            copy.id = UUID()
+            return copy
+        }
+        if suggestion.replaceExisting {
+            rules = incoming
+        } else {
+            rules = incoming + rules
+        }
+        persistSettings()
+        sidebar = .rename
+        schedulePreview()
     }
 
     func persistSettings() {
         UserDefaults.standard.set(confirmBeforeRename, forKey: confirmDefaultsKey)
         UserDefaults.standard.set(includeHiddenFiles, forKey: hiddenDefaultsKey)
         UserDefaults.standard.set(includeSubfolders, forKey: subfoldersDefaultsKey)
+        UserDefaults.standard.set(includeFolders, forKey: foldersDefaultsKey)
+        UserDefaults.standard.set(includeFolderContents, forKey: folderContentsDefaultsKey)
+        UserDefaults.standard.set(renameScope.rawValue, forKey: scopeDefaultsKey)
         if let data = try? JSONEncoder().encode(rules) {
             UserDefaults.standard.set(data, forKey: rulesDefaultsKey)
         }
@@ -96,6 +152,9 @@ final class AppModel {
             for preset in BuiltInPresets.all() {
                 context.insert(preset)
             }
+            try? context.save()
+        } else {
+            BuiltInPresets.localizeBuiltInNames(existing)
             try? context.save()
         }
         UserDefaults.standard.set(true, forKey: seededKey)
@@ -124,11 +183,14 @@ final class AppModel {
         }
 
         do {
-            let imported = try await Task.detached(priority: .userInitiated) { [includeHiddenFiles, includeSubfolders] in
+            let imported = try await Task.detached(priority: .userInitiated) {
+                [includeHiddenFiles, includeSubfolders, includeFolders, includeFolderContents] in
                 try await FileService.collect(
                     from: urls,
                     includeHidden: includeHiddenFiles,
-                    includeSubfolders: includeSubfolders
+                    includeSubfolders: includeSubfolders,
+                    includeFolders: includeFolders,
+                    includeFolderContents: includeFolderContents
                 )
             }.value
 
@@ -157,7 +219,8 @@ final class AppModel {
                         bookmark: item.bookmark,
                         parentBookmark: item.parentBookmark,
                         directoryWritable: item.directoryWritable,
-                        hasSecurityAccess: item.hasSecurityAccess
+                        hasSecurityAccess: item.hasSecurityAccess,
+                        isDirectory: item.isDirectory
                     )
                 )
             }
@@ -312,7 +375,7 @@ final class AppModel {
         validation = report
         applyValidation(report)
         guard report.canRename else {
-            errorMessage = "Rename was blocked because of validation errors."
+            errorMessage = "存在校验错误，已阻止重命名。"
             return
         }
 
@@ -359,13 +422,19 @@ final class AppModel {
                 modelContext.insert(historyItem)
                 if let file = lookup[entry.fileID] {
                     let newURL = URL(fileURLWithPath: entry.newPath)
+                    let wasDirectory = file.isDirectory
+                    let oldPath = file.originalURL.path
                     file.originalURL = newURL
                     file.originalName = entry.newName
                     file.proposedName = entry.newName
+                    file.directoryURL = newURL.deletingLastPathComponent()
                     file.bookmark = entry.newBookmark
                     file.status = .renamed
-                    file.statusMessage = "Renamed"
+                    file.statusMessage = "已重命名"
                     SecurityScopeStore.shared.retain(newURL)
+                    if wasDirectory {
+                        rewriteDescendantPaths(from: oldPath, to: entry.newPath)
+                    }
                 }
             }
             try? modelContext.save()
@@ -434,13 +503,18 @@ final class AppModel {
             let restoredByNewPath = Dictionary(uniqueKeysWithValues: outcome.entries.map { ($0.originalPath, $0) })
             for file in files {
                 if let restored = restoredByNewPath[file.originalURL.path] {
+                    let oldPath = file.originalURL.path
                     let url = URL(fileURLWithPath: restored.newPath)
                     file.originalURL = url
                     file.originalName = restored.newName
                     file.proposedName = restored.newName
+                    file.directoryURL = url.deletingLastPathComponent()
                     file.bookmark = restored.newBookmark
                     file.status = .ready
-                    file.statusMessage = "Restored"
+                    file.statusMessage = "已恢复"
+                    if file.isDirectory {
+                        rewriteDescendantPaths(from: oldPath, to: restored.newPath)
+                    }
                 }
             }
             schedulePreview()
@@ -455,6 +529,7 @@ final class AppModel {
         let generation = previewGeneration
         let snapshots = files.map(\.snapshot)
         let currentRules = rules
+        let scope = renameScope
 
         guard !snapshots.isEmpty else {
             validation = .empty
@@ -469,9 +544,21 @@ final class AppModel {
                 try await Task.sleep(for: .milliseconds(120))
                 try Task.checkCancellation()
 
-                let names = await Task.detached(priority: .userInitiated) {
+                var names = await Task.detached(priority: .userInitiated) {
                     RenameEngine.proposedNames(for: snapshots, rules: currentRules)
                 }.value
+                if scope != .all {
+                    for file in snapshots {
+                        switch scope {
+                        case .files:
+                            if file.isDirectory { names[file.id] = file.originalName }
+                        case .folders:
+                            if !file.isDirectory { names[file.id] = file.originalName }
+                        case .all:
+                            break
+                        }
+                    }
+                }
                 try Task.checkCancellation()
 
                 let report = await Task.detached(priority: .userInitiated) {
@@ -516,13 +603,29 @@ final class AppModel {
         panel.allowsMultipleSelection = true
         panel.canCreateDirectories = false
         panel.treatsFilePackagesAsDirectories = false
-        panel.prompt = "Add"
-        panel.message = folders ? "Choose folders to add" : "Choose files to add"
+        panel.prompt = "添加"
+        panel.message = folders ? "选择要重命名的文件夹，或导入其中的内容" : "选择要添加的文件"
         panel.begin { [weak self] response in
             guard response == .OK else { return }
             Task { @MainActor in
                 await self?.importURLs(panel.urls)
             }
+        }
+    }
+
+    private func rewriteDescendantPaths(from oldPath: String, to newPath: String) {
+        let old = (oldPath as NSString).standardizingPath
+        let destination = (newPath as NSString).standardizingPath
+        guard old != destination else { return }
+        let prefix = old.hasSuffix("/") ? old : old + "/"
+        let newPrefix = destination.hasSuffix("/") ? destination : destination + "/"
+        for file in files {
+            let path = (file.originalURL.path as NSString).standardizingPath
+            guard path.hasPrefix(prefix) else { continue }
+            let rest = String(path.dropFirst(prefix.count))
+            let updated = URL(fileURLWithPath: newPrefix + rest)
+            file.originalURL = updated
+            file.directoryURL = updated.deletingLastPathComponent()
         }
     }
 }

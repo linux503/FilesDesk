@@ -5,8 +5,15 @@ enum FileService: Sendable {
     static func collect(
         from urls: [URL],
         includeHidden: Bool,
-        includeSubfolders: Bool
+        includeSubfolders: Bool,
+        includeFolders: Bool,
+        includeFolderContents: Bool
     ) async throws -> [ImportedFile] {
+        var includeFolders = includeFolders
+        var includeFolderContents = includeFolderContents
+        if !includeFolders && !includeFolderContents {
+            includeFolders = true
+        }
         var collected: [ImportedFile] = []
         var seen = Set<String>()
         collected.reserveCapacity(256)
@@ -22,15 +29,30 @@ enum FileService: Sendable {
             ])
 
             if values.isDirectory == true, values.isPackage != true {
-                let parentBookmark = makeBookmark(for: standardized)
-                try await enumerateFolder(
-                    at: standardized,
-                    includeHidden: includeHidden,
-                    includeSubfolders: includeSubfolders,
+                let folderBookmark = makeBookmark(for: standardized)
+                let parentBookmark = makeBookmark(for: standardized.deletingLastPathComponent())
+                if includeFolders,
+                   let imported = makeImported(
+                    url: standardized,
+                    values: values,
                     parentBookmark: parentBookmark,
-                    into: &collected,
-                    seen: &seen
-                )
+                    fileBookmark: folderBookmark,
+                    isDirectory: true
+                   ),
+                   seen.insert(imported.url.path).inserted {
+                    collected.append(imported)
+                }
+                if includeFolderContents {
+                    try await enumerateFolder(
+                        at: standardized,
+                        includeHidden: includeHidden,
+                        includeSubfolders: includeSubfolders,
+                        includeFolders: includeFolders,
+                        parentBookmark: folderBookmark,
+                        into: &collected,
+                        seen: &seen
+                    )
+                }
             } else {
                 if let imported = importFile(at: standardized, parentBookmark: nil, includeHidden: includeHidden),
                    seen.insert(imported.url.path).inserted {
@@ -50,6 +72,7 @@ enum FileService: Sendable {
         at folder: URL,
         includeHidden: Bool,
         includeSubfolders: Bool,
+        includeFolders: Bool,
         parentBookmark: Data?,
         into collected: inout [ImportedFile],
         seen: inout Set<String>
@@ -82,6 +105,18 @@ enum FileService: Sendable {
             let isDirectory = values?.isDirectory == true && values?.isPackage != true
 
             if isDirectory {
+                if includeFolders,
+                   !shouldSkip(next, includeHidden: includeHidden, values: values),
+                   let imported = makeImported(
+                    url: next.standardizedFileURL,
+                    values: values,
+                    parentBookmark: parentBookmark,
+                    fileBookmark: makeBookmark(for: next),
+                    isDirectory: true
+                   ),
+                   seen.insert(imported.url.path).inserted {
+                    collected.append(imported)
+                }
                 if !includeSubfolders {
                     enumerator.skipDescendants()
                 }
@@ -96,7 +131,8 @@ enum FileService: Sendable {
                 url: next.standardizedFileURL,
                 values: values,
                 parentBookmark: parentBookmark,
-                fileBookmark: nil
+                fileBookmark: nil,
+                isDirectory: false
             ), seen.insert(imported.url.path).inserted {
                 collected.append(imported)
             }
@@ -128,7 +164,8 @@ enum FileService: Sendable {
             url: url,
             values: values,
             parentBookmark: parentBookmark,
-            fileBookmark: makeBookmark(for: url)
+            fileBookmark: makeBookmark(for: url),
+            isDirectory: values?.isDirectory == true && values?.isPackage != true
         )
     }
 
@@ -136,28 +173,33 @@ enum FileService: Sendable {
         url: URL,
         values: URLResourceValues?,
         parentBookmark: Data?,
-        fileBookmark: Data?
+        fileBookmark: Data?,
+        isDirectory: Bool
     ) -> ImportedFile? {
         let name = url.lastPathComponent
         guard !name.isEmpty else { return nil }
 
         let directory = url.deletingLastPathComponent()
-        let type = values?.contentType ?? UTType(filenameExtension: url.pathExtension) ?? .data
-        let writable = FileManager.default.isWritableFile(atPath: directory.path)
+        let type = isDirectory
+            ? UTType.folder
+            : (values?.contentType ?? UTType(filenameExtension: url.pathExtension) ?? .data)
+        let parentWritable = FileManager.default.isWritableFile(atPath: directory.path)
+        let writable = parentWritable || parentBookmark != nil || (isDirectory && fileBookmark != nil)
 
         return ImportedFile(
             url: url,
             name: name,
             directoryURL: directory,
-            fileSize: Int64(values?.fileSize ?? 0),
+            fileSize: isDirectory ? 0 : Int64(values?.fileSize ?? 0),
             typeIdentifier: type.identifier,
-            typeName: values?.localizedTypeDescription ?? type.localizedDescription ?? url.pathExtension.uppercased(),
+            typeName: isDirectory ? "文件夹" : (values?.localizedTypeDescription ?? type.localizedDescription ?? url.pathExtension.uppercased()),
             createdAt: values?.creationDate ?? .now,
             modifiedAt: values?.contentModificationDate ?? .now,
             bookmark: fileBookmark,
             parentBookmark: parentBookmark,
             directoryWritable: writable,
-            hasSecurityAccess: true
+            hasSecurityAccess: true,
+            isDirectory: isDirectory
         )
     }
 

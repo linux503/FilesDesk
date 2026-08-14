@@ -8,7 +8,7 @@ const I18N = {
       privacy: { title: "隐私政策 — FilesDesk", desc: "FilesDesk 隐私说明。重命名在本地完成，更新通过 Sparkle 检查。" },
       changelog: { title: "更新日志 — FilesDesk", desc: "FilesDesk 版本更新与 Sparkle 更新记录。" }
     },
-    nav: { features: "功能", download: "下载", faq: "常见问题", privacy: "隐私", changelog: "更新", moreApps: "更多软件" },
+    nav: { features: "功能", download: "下载", faq: "常见问题", privacy: "隐私", changelog: "更新", moreApps: "更多软件", menu: "菜单" },
     lang: { label: "语言", zh: "中文", en: "English" },
     home: {
       badge: "macOS 14+ · Apple 芯片 & Intel · 原生",
@@ -137,6 +137,14 @@ const I18N = {
     changelog: {
       title: "更新日志",
       intro: "应用通过 Sparkle 读取此更新源。安装包发布在 GitHub Releases。",
+      v110Date: "2026 年 8 月 14 日",
+      v110Items: [
+        "中文界面，文件和文件夹可一起重命名",
+        "嵌套文件夹可同时加前缀，不再误报错误",
+        "智能建议：摄影、截图、拷贝编号、文件夹前缀",
+        "侧边栏与官网导航改版",
+        "Universal：Apple 芯片与 Intel"
+      ],
       v100Date: "2026 年 8 月 14 日",
       v100Items: [
         "批量重命名与实时预览",
@@ -158,7 +166,7 @@ const I18N = {
       privacy: { title: "Privacy — FilesDesk", desc: "FilesDesk privacy policy. Renaming stays local; updates use Sparkle." },
       changelog: { title: "Changelog — FilesDesk", desc: "FilesDesk release history and Sparkle update feed." }
     },
-    nav: { features: "Features", download: "Download", faq: "FAQ", privacy: "Privacy", changelog: "Updates", moreApps: "More Apps" },
+    nav: { features: "Features", download: "Download", faq: "FAQ", privacy: "Privacy", changelog: "Updates", moreApps: "More Apps", menu: "Menu" },
     lang: { label: "Language", zh: "中文", en: "English" },
     home: {
       badge: "macOS 14+ · Apple silicon & Intel · Native",
@@ -287,6 +295,14 @@ const I18N = {
     changelog: {
       title: "Changelog",
       intro: "The app checks this feed with Sparkle. Release archives are on GitHub.",
+      v110Date: "August 14, 2026",
+      v110Items: [
+        "Chinese-first UI; rename files and folders in one list",
+        "Nested folders can be renamed together",
+        "Smart suggestions for photos, screenshots, copy numbers, and folder prefixes",
+        "Redesigned sidebar and website navigation",
+        "Universal binary for Apple silicon and Intel"
+      ],
       v100Date: "August 14, 2026",
       v100Items: [
         "Batch rename with live preview",
@@ -330,8 +346,9 @@ function applyLang(lang) {
       el.textContent = val;
     }
   });
-  document.querySelectorAll("[data-i18n-placeholder]").forEach((el) => {
-    el.placeholder = t(lang, el.dataset.i18nPlaceholder);
+  document.querySelectorAll("[data-i18n-aria]").forEach((el) => {
+    const val = t(lang, el.dataset.i18nAria);
+    if (typeof val === "string") el.setAttribute("aria-label", val);
   });
   const page = document.body.dataset.page;
   if (page && I18N[lang].meta[page]) {

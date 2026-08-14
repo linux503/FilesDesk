@@ -13,6 +13,7 @@ enum ValidationKind: String, Sendable, Equatable {
     case permission
     case unchanged
     case invalidRule
+    case nestedConflict
 }
 
 struct ValidationIssue: Sendable, Equatable, Identifiable {
@@ -49,13 +50,15 @@ struct ValidationReport: Sendable, Equatable {
     var changeCount: Int
     var errorCount: Int
     var warningCount: Int
+    var firstErrorMessage: String?
 
     static let empty = ValidationReport(
         fileResults: [:],
         globalIssues: [],
         changeCount: 0,
         errorCount: 0,
-        warningCount: 0
+        warningCount: 0,
+        firstErrorMessage: nil
     )
 
     var canRename: Bool {
@@ -64,15 +67,19 @@ struct ValidationReport: Sendable, Equatable {
 
     var statusTitle: String {
         if errorCount > 0 {
-            return errorCount == 1 ? "1 Error" : "\(errorCount) Errors"
+            let count = errorCount == 1 ? "1 个错误" : "\(errorCount) 个错误"
+            if let firstErrorMessage, !firstErrorMessage.isEmpty {
+                return "\(count) · \(firstErrorMessage)"
+            }
+            return count
         }
         if changeCount == 0 {
-            return filesAreUnchanged ? "Unchanged" : "Add files"
+            return filesAreUnchanged ? "未更改" : "请添加文件"
         }
         if warningCount > 0 {
-            return "Ready · \(warningCount == 1 ? "1 Warning" : "\(warningCount) Warnings")"
+            return "就绪 · \(warningCount == 1 ? "1 个警告" : "\(warningCount) 个警告")"
         }
-        return "Ready"
+        return "就绪"
     }
 
     private var filesAreUnchanged: Bool {

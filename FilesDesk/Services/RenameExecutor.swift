@@ -19,16 +19,45 @@ enum RenameExecutor: Sendable {
         progress: (@Sendable (Int, Int) -> Void)? = nil
     ) throws -> RenameOutcome {
         guard !plan.isEmpty else {
-            throw RenameExecutorError.blocked("Nothing to rename.")
+            throw RenameExecutorError.blocked("没有需要重命名的项目。")
         }
 
+        let grouped = Dictionary(grouping: plan) {
+            ($0.from.deletingLastPathComponent().path as NSString).standardizingPath
+        }
+        let parents = grouped.keys.sorted {
+            $0.split(separator: "/").count > $1.split(separator: "/").count
+        }
+
+        var allEntries: [RenameOutcomeEntry] = []
+        allEntries.reserveCapacity(plan.count)
+        let total = plan.count * 2
+        var completed = 0
+
+        for parent in parents {
+            let group = grouped[parent] ?? []
+            let base = completed
+            let outcome = try executeGroup(group) { done, _ in
+                progress?(base + done, total)
+            }
+            completed += group.count * 2
+            allEntries.append(contentsOf: outcome.entries)
+        }
+
+        return RenameOutcome(timestamp: .now, entries: allEntries)
+    }
+
+    private static func executeGroup(
+        _ plan: [RenamePlanItem],
+        progress: (@Sendable (Int, Int) -> Void)?
+    ) throws -> RenameOutcome {
         let fileManager = FileManager.default
         for item in plan {
             if fileManager.fileExists(atPath: item.to.path), !isSameItem(item.from, item.to) {
-                throw RenameExecutorError.blocked("A file named “\(item.newName)” already exists. Rename was cancelled.")
+                throw RenameExecutorError.blocked("已存在名为“\(item.newName)”的项目，重命名已取消。")
             }
             if item.to.lastPathComponent.isEmpty {
-                throw RenameExecutorError.blocked("Empty filename. Rename was cancelled.")
+                throw RenameExecutorError.blocked("名称为空，重命名已取消。")
             }
         }
 
@@ -67,7 +96,7 @@ enum RenameExecutor: Sendable {
                     }
                 }
             }
-            return failures.isEmpty ? nil : "Could not restore: \(failures.joined(separator: ", "))"
+            return failures.isEmpty ? nil : "无法恢复：\(failures.joined(separator: ", "))"
         }
 
         do {
@@ -89,7 +118,7 @@ enum RenameExecutor: Sendable {
 
             for (item, temp) in temps {
                 if fileManager.fileExists(atPath: item.to.path) {
-                    throw RenameExecutorError.blocked("A file named “\(item.newName)” already exists. Rename was cancelled.")
+                    throw RenameExecutorError.blocked("已存在名为“\(item.newName)”的项目，重命名已取消。")
                 }
                 try fileManager.moveItem(at: temp, to: item.to)
                 performed.append(JournalMove(from: temp.path, to: item.to.path))
@@ -125,7 +154,7 @@ enum RenameExecutor: Sendable {
             }
             if let rollbackMessage {
                 throw RenameExecutorError.rollbackFailed(
-                    "Rename failed and some files could not be restored. \(rollbackMessage)"
+                    "重命名失败，部分文件无法恢复。\(rollbackMessage)"
                 )
             }
             if let renameError = error as? RenameExecutorError {

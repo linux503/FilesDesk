@@ -7,17 +7,9 @@ struct RootView: View {
         @Bindable var model = model
 
         NavigationSplitView {
-            List(selection: $model.sidebar) {
-                Section {
-                    ForEach(SidebarItem.allCases) { item in
-                        Label(item.title, systemImage: item.systemImage)
-                            .tag(item)
-                    }
-                }
-            }
-            .listStyle(.sidebar)
-            .navigationSplitViewColumnWidth(min: 168, ideal: 196, max: 240)
-            .navigationTitle("FilesDesk")
+            SidebarView()
+                .navigationSplitViewColumnWidth(min: 228, ideal: 248, max: 300)
+                .navigationTitle("FilesDesk")
         } detail: {
             switch model.sidebar {
             case .rename:
@@ -33,13 +25,13 @@ struct RootView: View {
         .navigationSplitViewStyle(.balanced)
         .focusedSceneValue(\.appModel, model)
         .alert(
-            "Couldn’t complete the action",
+            "无法完成操作",
             isPresented: Binding(
                 get: { model.errorMessage != nil },
                 set: { if !$0 { model.errorMessage = nil } }
             )
         ) {
-            Button("OK", role: .cancel) { model.errorMessage = nil }
+            Button("确定", role: .cancel) { model.errorMessage = nil }
         } message: {
             Text(model.errorMessage ?? "")
         }
@@ -51,23 +43,31 @@ struct RootView: View {
             Button(model.renameButtonTitle) {
                 Task { await model.performRename() }
             }
-            Button("Cancel", role: .cancel) {}
+            Button("取消", role: .cancel) {}
         } message: {
-            Text("FilesDesk will never overwrite an existing file. This can be undone from History.")
+            Text("FilesDesk 绝不会覆盖已有文件。可稍后在历史中撤销。")
         }
         .overlay {
             if model.isRenaming {
                 ZStack {
-                    Color.black.opacity(0.18)
-                    VStack(spacing: 12) {
+                    Color.black.opacity(0.22)
+                    VStack(spacing: 14) {
+                        Image(systemName: "wand.and.stars")
+                            .font(.system(size: 22, weight: .semibold))
+                            .foregroundStyle(.tint)
+                        Text("正在重命名…")
+                            .font(.headline)
                         ProgressView(value: model.renameProgress)
                             .progressViewStyle(.linear)
                             .frame(width: 220)
-                        Text("Renaming files…")
-                            .font(.headline)
                     }
-                    .padding(24)
-                    .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+                    .padding(28)
+                    .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
+                    .overlay {
+                        RoundedRectangle(cornerRadius: 18, style: .continuous)
+                            .strokeBorder(Color.white.opacity(0.12), lineWidth: 1)
+                    }
+                    .shadow(color: .black.opacity(0.18), radius: 24, y: 10)
                 }
                 .ignoresSafeArea()
             }

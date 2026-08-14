@@ -25,19 +25,26 @@ jobs:
             -destination "platform=macOS" \
             CODE_SIGN_IDENTITY=-
 
-      - name: Build
+      - name: Build Universal
         run: |
           xcodebuild build \
             -project FilesDesk.xcodeproj \
             -scheme FilesDesk \
-            -destination "platform=macOS" \
+            -destination "generic/platform=macOS" \
             -configuration Release \
             -derivedDataPath build/DerivedData \
+            ARCHS="arm64 x86_64" \
+            ONLY_ACTIVE_ARCH=NO \
             CODE_SIGN_IDENTITY=-
+          APP="build/DerivedData/Build/Products/Release/FilesDesk.app"
+          ARCHS_FOUND="$(lipo -archs "$APP/Contents/MacOS/FilesDesk")"
+          echo "Architectures: $ARCHS_FOUND"
+          echo "$ARCHS_FOUND" | grep -qw arm64
+          echo "$ARCHS_FOUND" | grep -qw x86_64
           mkdir -p build/dist
           VERSION="${GITHUB_REF_NAME#v}"
           ditto -c -k --keepParent \
-            build/DerivedData/Build/Products/Release/FilesDesk.app \
+            "$APP" \
             "build/dist/FilesDesk-${VERSION}.zip"
 
       - name: Sign Sparkle update
@@ -61,9 +68,13 @@ jobs:
           VERSION="${GITHUB_REF_NAME#v}"
           ZIP="build/dist/FilesDesk-${VERSION}.zip"
           NOTES="$(awk "/^## $VERSION/{flag=1;next}/^## /{flag=0}flag" CHANGELOG.md)"
-          gh release create "$GITHUB_REF_NAME" "$ZIP" \
-            --title "FilesDesk $VERSION" \
-            --notes "${NOTES:-FilesDesk $VERSION}"
+          if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
+            gh release upload "$GITHUB_REF_NAME" "$ZIP" --clobber
+          else
+            gh release create "$GITHUB_REF_NAME" "$ZIP" \
+              --title "FilesDesk $VERSION" \
+              --notes "${NOTES:-FilesDesk $VERSION}"
+          fi
 
       - name: Sync appcast
         env:

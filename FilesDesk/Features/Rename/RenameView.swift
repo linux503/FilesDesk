@@ -25,7 +25,7 @@ struct RenameView: View {
             }
         }
         .focusedSceneValue(\.appModel, model)
-        .navigationTitle("Rename")
+        .navigationTitle("重命名")
     }
 }
 
@@ -34,19 +34,19 @@ private struct RenameToolbar: ToolbarContent {
 
     var body: some ToolbarContent {
         ToolbarItemGroup(placement: .primaryAction) {
-            Button("Add Files", systemImage: "doc.badge.plus") {
+            Button("添加文件", systemImage: "doc.badge.plus") {
                 model.addFiles()
             }
-            Button("Add Folder", systemImage: "folder.badge.plus") {
+            Button("添加文件夹", systemImage: "folder.badge.plus") {
                 model.addFolder()
             }
         }
         ToolbarItemGroup(placement: .automatic) {
-            Button("Quick Look", systemImage: "eye") {
+            Button("快速查看", systemImage: "eye") {
                 model.quickLookSelected()
             }
             .disabled(model.files.isEmpty)
-            Button("Remove", systemImage: "minus") {
+            Button("移除", systemImage: "minus") {
                 model.removeSelected()
             }
             .disabled(model.selection.isEmpty)
@@ -63,10 +63,10 @@ struct CompletionBanner: View {
             Image(systemName: "checkmark.circle.fill")
                 .foregroundStyle(.green)
             Text(completion.fileCount == 1
-                 ? "1 file renamed successfully"
-                 : "\(completion.fileCount) files renamed successfully")
+                 ? "已成功重命名 1 个文件"
+                 : "已成功重命名 \(completion.fileCount) 个文件")
             Spacer()
-            Button("Undo") {
+            Button("撤销") {
                 Task { await model.undoLastCompletion() }
             }
             .buttonStyle(.bordered)
@@ -76,7 +76,7 @@ struct CompletionBanner: View {
                 Image(systemName: "xmark")
             }
             .buttonStyle(.borderless)
-            .help("Dismiss")
+            .help("关闭")
         }
         .font(.callout)
         .padding(.horizontal, 16)
@@ -94,8 +94,8 @@ private struct RecoveryBanner: View {
             Image(systemName: "arrow.uturn.backward.circle.fill")
                 .foregroundStyle(.orange)
             Text(model.recoveredCount == 1
-                 ? "Restored 1 file from an interrupted rename."
-                 : "Restored \(model.recoveredCount) files from an interrupted rename.")
+                 ? "已从中断的重命名中恢复 1 个文件。"
+                 : "已从中断的重命名中恢复 \(model.recoveredCount) 个文件。")
             Spacer()
             Button {
                 model.recoveredCount = 0

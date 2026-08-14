@@ -199,6 +199,7 @@ func drawOG() -> NSBitmapImageRep {
 
 let root = CommandLine.arguments[1]
 let appIcon = root + "/FilesDesk/Assets.xcassets/AppIcon.appiconset"
+let appLogo = root + "/FilesDesk/Assets.xcassets/AppLogo.imageset"
 let web = root + "/docs/assets"
 
 let sizes: [(String, Int)] = [
@@ -212,6 +213,8 @@ let sizes: [(String, Int)] = [
 for (name, px) in sizes {
     writePNG(render(px), "\(appIcon)/\(name)")
 }
+writePNG(render(256), "\(appLogo)/AppLogo.png")
+writePNG(render(512), "\(appLogo)/AppLogo@2x.png")
 writePNG(render(1024), "\(web)/icon-1024.png")
 writePNG(render(512), "\(web)/icon.png")
 writePNG(render(32), "\(web)/favicon-32.png")

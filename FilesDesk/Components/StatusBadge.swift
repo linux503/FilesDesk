@@ -18,12 +18,12 @@ struct StatusBadge: View {
 
     private var title: String {
         switch status {
-        case .previewing: "Preview"
-        case .ready: "Ready"
-        case .unchanged: "Unchanged"
-        case .warning: "Warning"
-        case .error: "Error"
-        case .renamed: "Renamed"
+        case .previewing: "预览"
+        case .ready: "就绪"
+        case .unchanged: "未更改"
+        case .warning: "警告"
+        case .error: message.isEmpty ? "错误" : message
+        case .renamed: "已重命名"
         }
     }
 

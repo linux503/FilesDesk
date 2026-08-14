@@ -20,4 +20,31 @@ async function latestRelease() {
   }
 }
 
-document.addEventListener("DOMContentLoaded", latestRelease);
+function initNav() {
+  const header = document.querySelector(".site-header");
+  const toggle = document.querySelector(".nav-toggle");
+  if (!header || !toggle) return;
+
+  const close = () => {
+    header.classList.remove("is-open");
+    toggle.setAttribute("aria-expanded", "false");
+  };
+
+  toggle.addEventListener("click", () => {
+    const open = header.classList.toggle("is-open");
+    toggle.setAttribute("aria-expanded", open ? "true" : "false");
+  });
+
+  header.querySelectorAll(".nav-links a").forEach((link) => {
+    link.addEventListener("click", close);
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") close();
+  });
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  latestRelease();
+  initNav();
+});

@@ -42,12 +42,29 @@ enum RenameEngine: Sendable {
                 modifiedAt: file.modifiedAt,
                 now: now
             )
-            result[file.id] = apply(rules: enabled, to: file.originalName, context: context)
+            result[file.id] = apply(
+                rules: enabled,
+                to: file.originalName,
+                context: context,
+                isDirectory: file.isDirectory
+            )
         }
         return result
     }
 
-    static func apply(rules: [RenameRule], to filename: String, context: ApplyContext) -> String {
+    static func apply(
+        rules: [RenameRule],
+        to filename: String,
+        context: ApplyContext,
+        isDirectory: Bool = false
+    ) -> String {
+        if isDirectory {
+            var name = filename
+            for rule in rules where rule.isEnabled {
+                name = apply(rule: rule, to: name, context: context)
+            }
+            return name
+        }
         let parts = FilenameParts.split(filename)
         var stem = parts.stem
         for rule in rules where rule.isEnabled {

@@ -2,7 +2,6 @@ import SwiftData
 import SwiftUI
 import Sparkle
 
-@main
 struct FilesDeskApp: App {
     private let container: ModelContainer
     private let updaterController: SPUStandardUpdaterController
@@ -37,8 +36,9 @@ struct FilesDeskApp: App {
                 }
         }
         .modelContainer(container)
-        .defaultSize(width: 1180, height: 760)
+        .defaultSize(width: 1220, height: 780)
         .windowResizability(.contentMinSize)
+        .windowToolbarStyle(.unified)
         .commands {
             CommandGroup(after: .appInfo) {
                 CheckForUpdatesView(updater: updaterController.updater)

@@ -16,5 +16,9 @@
 	<true/>
 	<key>SUShowReleaseNotes</key>
 	<true/>
+	<key>CFBundleLocalizations</key>
+	<array>
+		<string>zh-Hans</string>
+	</array>
 </dict>
 </plist>

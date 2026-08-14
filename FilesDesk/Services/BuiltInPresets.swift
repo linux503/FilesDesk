@@ -16,7 +16,7 @@ enum BuiltInPresets {
         var prefix = RenameRule.make(.prefix)
         prefix.parameters.affixText = "Photo_"
         let cleanup = RenameRule.make(.cleanup)
-        return RenamePreset(name: "Photography", isBuiltIn: true, rules: [cleanup, remove, prefix])
+        return RenamePreset(name: "摄影", isBuiltIn: true, rules: [cleanup, remove, prefix])
     }
 
     static func screenshots() -> RenamePreset {
@@ -30,7 +30,7 @@ enum BuiltInPresets {
         date.parameters.dateSource = .created
         var cleanup = RenameRule.make(.cleanup)
         cleanup.parameters.spacesToUnderscores = true
-        return RenamePreset(name: "Screenshots", isBuiltIn: true, rules: [removeShot, removeLegacy, cleanup, date])
+        return RenamePreset(name: "截图", isBuiltIn: true, rules: [removeShot, removeLegacy, cleanup, date])
     }
 
     static func ecommerce() -> RenamePreset {
@@ -45,7 +45,7 @@ enum BuiltInPresets {
         var number = RenameRule.make(.numbering)
         number.parameters.numberingPosition = .suffix
         number.parameters.numberingSeparator = "-"
-        return RenamePreset(name: "E-commerce", isBuiltIn: true, rules: [cleanup, lower, prefix, number])
+        return RenamePreset(name: "电商", isBuiltIn: true, rules: [cleanup, lower, prefix, number])
     }
 
     static func documents() -> RenamePreset {
@@ -56,6 +56,20 @@ enum BuiltInPresets {
         date.parameters.dateFormat = "yyyy-MM-dd"
         date.parameters.datePosition = .prefix
         date.parameters.dateSource = .modified
-        return RenamePreset(name: "Documents", isBuiltIn: true, rules: [cleanup, title, date])
+        return RenamePreset(name: "文档", isBuiltIn: true, rules: [cleanup, title, date])
+    }
+
+    static func localizeBuiltInNames(_ presets: [RenamePreset]) {
+        let names = [
+            "Photography": "摄影",
+            "Screenshots": "截图",
+            "E-commerce": "电商",
+            "Documents": "文档"
+        ]
+        for preset in presets where preset.isBuiltIn {
+            if let zh = names[preset.name] {
+                preset.name = zh
+            }
+        }
     }
 }

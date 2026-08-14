@@ -32,17 +32,24 @@ xcodebuild test \
   -configuration Debug \
   CODE_SIGN_IDENTITY="$IDENTITY"
 
-echo "==> Build"
+echo "==> Build (Universal: arm64 + x86_64)"
 rm -rf "$ROOT/build/Release"
 xcodebuild build \
   -project FilesDesk.xcodeproj \
   -scheme FilesDesk \
-  -destination "platform=macOS" \
+  -destination "generic/platform=macOS" \
   -configuration Release \
   -derivedDataPath "$ROOT/build/DerivedData" \
+  ARCHS="arm64 x86_64" \
+  ONLY_ACTIVE_ARCH=NO \
   CODE_SIGN_IDENTITY="$IDENTITY"
 
 APP="$ROOT/build/DerivedData/Build/Products/Release/FilesDesk.app"
+BIN="$APP/Contents/MacOS/FilesDesk"
+ARCHS_FOUND="$(lipo -archs "$BIN")"
+echo "Architectures: $ARCHS_FOUND"
+echo "$ARCHS_FOUND" | grep -qw arm64
+echo "$ARCHS_FOUND" | grep -qw x86_64
 DIST="$ROOT/build/dist"
 mkdir -p "$DIST"
 ZIP="$DIST/FilesDesk-$VERSION.zip"

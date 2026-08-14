@@ -5,40 +5,40 @@ struct FilesDeskCommands: Commands {
 
     var body: some Commands {
         CommandGroup(after: .newItem) {
-            Button("Add Files…") {
+            Button("添加文件…") {
                 model?.addFiles()
             }
             .keyboardShortcut("o", modifiers: [.command])
 
-            Button("Add Folder…") {
+            Button("添加文件夹…") {
                 model?.addFolder()
             }
             .keyboardShortcut("o", modifiers: [.command, .shift])
 
             Divider()
 
-            Button("Select All Files") {
+            Button("全选文件") {
                 model?.selectAllVisible()
             }
             .keyboardShortcut("a", modifiers: [.command, .shift])
 
-            Button("Remove from List") {
+            Button("从列表移除") {
                 model?.removeSelected()
             }
 
-            Button("Clear File List") {
+            Button("清空文件列表") {
                 model?.clearFiles()
             }
         }
 
-        CommandMenu("Rename") {
-            Button(model?.renameButtonTitle ?? "Rename") {
+        CommandMenu("重命名") {
+            Button(model?.renameButtonTitle ?? "重命名") {
                 model?.requestRename()
             }
             .keyboardShortcut("r", modifiers: [.command, .shift])
             .disabled(!(model?.canRename ?? false))
 
-            Button("Undo Last Rename") {
+            Button("撤销上次重命名") {
                 Task { await model?.undoLastCompletion() }
             }
             .keyboardShortcut("z", modifiers: [.command, .option])
@@ -46,12 +46,12 @@ struct FilesDeskCommands: Commands {
 
             Divider()
 
-            Button("Quick Look") {
+            Button("快速查看") {
                 model?.quickLookSelected()
             }
             .keyboardShortcut("y", modifiers: [.command])
 
-            Button("Reveal in Finder") {
+            Button("在 Finder 中显示") {
                 model?.revealSelected()
             }
             .keyboardShortcut("r", modifiers: [.command, .control])

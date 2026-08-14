@@ -11,25 +11,35 @@ struct PresetsView: View {
         VStack(spacing: 0) {
             if presets.isEmpty {
                 ContentUnavailableView(
-                    "No Presets",
+                    "暂无预设",
                     systemImage: "square.stack",
-                    description: Text("Save the current rules as a preset to reuse them later.")
+                    description: Text("将当前规则保存为预设，方便下次复用。")
                 )
             } else {
                 List {
                     ForEach(presets) { preset in
-                        HStack(alignment: .firstTextBaseline, spacing: 12) {
-                            Image(systemName: "square.stack")
-                                .foregroundStyle(.secondary)
-                                .frame(width: 20)
+                        HStack(alignment: .center, spacing: 12) {
+                            Image(systemName: "square.stack.3d.up.fill")
+                                .font(.system(size: 13, weight: .semibold))
+                                .foregroundStyle(.white)
+                                .frame(width: 32, height: 32)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 9, style: .continuous)
+                                        .fill(Color(red: 0.46, green: 0.32, blue: 0.96))
+                                )
                             VStack(alignment: .leading, spacing: 3) {
                                 HStack(spacing: 8) {
                                     Text(preset.name)
                                         .font(.headline)
                                     if preset.isBuiltIn {
-                                        Text("Built-in")
-                                            .font(.caption)
-                                            .foregroundStyle(.secondary)
+                                        Text("内置")
+                                            .font(.caption2.weight(.semibold))
+                                            .foregroundStyle(Color(red: 0.46, green: 0.32, blue: 0.96))
+                                            .padding(.horizontal, 6)
+                                            .padding(.vertical, 2)
+                                            .background(
+                                                Capsule().fill(Color(red: 0.46, green: 0.32, blue: 0.96).opacity(0.12))
+                                            )
                                     }
                                 }
                                 Text(ruleSummary(preset))
@@ -38,17 +48,18 @@ struct PresetsView: View {
                                     .lineLimit(2)
                             }
                             Spacer()
-                            Button("Use") {
+                            Button("使用") {
                                 model.applyPreset(preset)
                             }
-                            .buttonStyle(.bordered)
+                            .buttonStyle(.borderedProminent)
+                            .controlSize(.small)
                         }
-                        .padding(.vertical, 6)
+                        .padding(.vertical, 8)
                         .contextMenu {
-                            Button("Use Preset") {
+                            Button("使用预设") {
                                 model.applyPreset(preset)
                             }
-                            Button("Delete", role: .destructive) {
+                            Button("删除", role: .destructive) {
                                 model.deletePreset(preset)
                             }
                         }
@@ -61,10 +72,10 @@ struct PresetsView: View {
                 }
             }
         }
-        .navigationTitle("Presets")
+        .navigationTitle("预设")
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
-                Button("Save Current Rules", systemImage: "plus") {
+                Button("保存当前规则", systemImage: "plus") {
                     showSaveSheet = true
                 }
                 .disabled(model.rules.isEmpty)
@@ -85,7 +96,7 @@ struct PresetsView: View {
 
     private func ruleSummary(_ preset: RenamePreset) -> String {
         let rules = preset.decodedRules()
-        if rules.isEmpty { return "Empty" }
+        if rules.isEmpty { return "空" }
         return rules.map(\.kind.title).joined(separator: " → ")
     }
 }
@@ -97,15 +108,15 @@ private struct SavePresetSheet: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text("Save Preset")
+            Text("保存预设")
                 .font(.headline)
-            TextField("Name", text: $name)
+            TextField("名称", text: $name)
                 .textFieldStyle(.roundedBorder)
             HStack {
                 Spacer()
-                Button("Cancel", action: onCancel)
+                Button("取消", action: onCancel)
                     .keyboardShortcut(.cancelAction)
-                Button("Save", action: onSave)
+                Button("保存", action: onSave)
                     .keyboardShortcut(.defaultAction)
                     .disabled(name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
             }
