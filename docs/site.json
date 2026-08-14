@@ -1,0 +1,7 @@
+{
+  "name": "FilesDesk",
+  "github": "linux503/FilesDesk",
+  "site": "https://linux503.github.io/FilesDesk",
+  "feed": "https://linux503.github.io/FilesDesk/appcast.xml",
+  "bundleId": "com.filesdesk.FilesDesk"
+}

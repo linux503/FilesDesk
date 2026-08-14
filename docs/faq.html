@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FAQ — FilesDesk</title>
+  <meta name="description" content="Answers about FilesDesk renaming, undo, history, presets, and updates.">
+  <link rel="icon" type="image/png" href="./assets/favicon-32.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <header class="wrap site-header">
+    <a class="brand" href="./">
+      <img src="./assets/icon.png" alt="">
+      FilesDesk
+    </a>
+    <nav>
+      <a href="./download.html">Download</a>
+      <a href="./faq.html" aria-current="page">FAQ</a>
+      <a href="./privacy.html">Privacy</a>
+      <a href="./changelog.html">Updates</a>
+    </nav>
+  </header>
+  <main class="wrap page">
+    <h1>FAQ</h1>
+    <dl class="faq">
+      <dt>Does preview rename files?</dt>
+      <dd>No. Preview only computes new names in memory. Disk writes start after validation, when you click Rename.</dd>
+      <dt>Can FilesDesk overwrite a file?</dt>
+      <dd>No. If a target name already exists, or two files would share a name, rename is blocked.</dd>
+      <dt>How does undo work?</dt>
+      <dd>Each successful batch is stored in History with the old and new paths. Undo restores the original names using the same two-phase rename.</dd>
+      <dt>What are presets?</dt>
+      <dd>A preset is a saved set of rules. Photography, Screenshots, E-commerce, and Documents ship built-in. You can save your own.</dd>
+      <dt>How do in-app updates work?</dt>
+      <dd>FilesDesk uses Sparkle. The app reads an update feed on this site and installs a signed build from GitHub Releases.</dd>
+      <dt>Is there an account?</dt>
+      <dd>No. There is no login, cloud sync, or telemetry account.</dd>
+    </dl>
+  </main>
+  <footer class="wrap site-footer">
+    <span>FilesDesk</span>
+    <div>
+      <a href="./privacy.html">Privacy</a>
+      <a href="./changelog.html">Changelog</a>
+      <a href="https://github.com/linux503/FilesDesk">GitHub</a>
+    </div>
+  </footer>
+</body>
+</html>

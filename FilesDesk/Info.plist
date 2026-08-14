@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>SUFeedURL</key>
+	<string>https://linux503.github.io/FilesDesk/appcast.xml</string>
+	<key>SUPublicEDKey</key>
+	<string>nO/Btb2apiXTt8yXJ1R7S0855l+OPrmjPC61WqGSBqM=</string>
+	<key>SUEnableAutomaticChecks</key>
+	<false/>
+	<key>SUScheduledCheckInterval</key>
+	<integer>86400</integer>
+	<key>SUEnableInstallerLauncherService</key>
+	<true/>
+	<key>SUAllowsAutomaticUpdates</key>
+	<true/>
+	<key>SUShowReleaseNotes</key>
+	<true/>
+</dict>
+</plist>
