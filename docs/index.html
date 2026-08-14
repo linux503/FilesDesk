@@ -4,29 +4,30 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>FilesDesk — Mac 智能批量重命名</title>
-  <meta name="description" content="原生 Mac 批量重命名工具。实时预览、撤销、历史与预设。绝不覆盖已有文件。">
+  <meta name="description" content="原生 Mac 批量重命名工具。实时预览、规则组合、文件与文件夹、撤销与历史。绝不覆盖已有文件。">
   <meta property="og:title" content="FilesDesk">
   <meta property="og:description" content="Mac 智能批量重命名。简单、原生、安全、快速。">
-  <meta property="og:image" content="./assets/og.png?v=3">
-  <link rel="icon" type="image/png" href="./assets/favicon-32.png?v=3">
-  <link rel="apple-touch-icon" href="./assets/apple-touch-180.png?v=3">
+  <meta property="og:image" content="./assets/og.png?v=4">
+  <link rel="icon" type="image/png" href="./assets/favicon-32.png?v=4">
+  <link rel="apple-touch-icon" href="./assets/apple-touch-180.png?v=4">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,600;0,9..40,700;1,9..40,400&family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles.css?v=5">
 </head>
 <body data-page="home" data-current-app="filesdesk">
+  <div class="atmosphere" aria-hidden="true"></div>
   <header class="wrap site-header">
     <a class="brand" href="./">
-      <img src="./assets/icon.png?v=3" alt="FilesDesk">
+      <img src="./assets/icon.png?v=4" alt="">
       FilesDesk
     </a>
     <div class="header-right">
       <nav>
+        <a href="#features" data-i18n="nav.features">功能</a>
         <a href="./download.html" data-i18n="nav.download">下载</a>
         <a href="./faq.html" data-i18n="nav.faq">常见问题</a>
         <a href="./privacy.html" data-i18n="nav.privacy">隐私</a>
-        <a href="./changelog.html" data-i18n="nav.changelog">更新</a>
       </nav>
       <div data-more-apps></div>
       <div class="lang-switch" role="group" aria-label="Language">
@@ -39,19 +40,20 @@
   <main>
     <section class="wrap hero">
       <div class="hero-copy">
-        <div class="hero-badge">macOS 14+ · Swift · 原生</div>
         <h1>FilesDesk</h1>
         <p class="lede" data-i18n="home.lede">一次重命名上千个文件</p>
-        <p class="sub" data-i18n="home.sub">实时预览、撤销与历史记录。原生 Mac 工具，绝不覆盖已有文件。</p>
+        <p class="sub" data-i18n="home.sub">拖拽导入文件或文件夹，组合 9 种规则，实时预览后再写入。原生 Mac 工具，绝不覆盖已有文件。</p>
         <div class="cta-row">
           <a class="button" data-download href="https://github.com/linux503/FilesDesk/releases" data-i18n="home.cta">下载 Mac 版</a>
           <a class="text-link" href="https://github.com/linux503/FilesDesk" data-i18n="home.source">查看源码</a>
         </div>
+        <p class="hero-meta" data-i18n="home.badge">macOS 14+ · Apple 芯片 & Intel · 原生</p>
       </div>
       <div class="hero-stage" aria-hidden="true">
         <div class="app">
           <div class="app-chrome">
             <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+            <img src="./assets/icon.png?v=4" alt="">
             <span>FilesDesk</span>
           </div>
           <div class="app-body">
@@ -62,10 +64,11 @@
               <div class="nav-item" data-i18n="mock.settings">设置</div>
             </aside>
             <div class="files">
-              <div class="row"><span class="old">IMG_001.jpg</span><span class="new">Taipei_001.jpg</span></div>
-              <div class="row"><span class="old">IMG_002.jpg</span><span class="new">Taipei_002.jpg</span></div>
-              <div class="row"><span class="old">IMG_003.jpg</span><span class="new">Taipei_003.jpg</span></div>
-              <div class="row"><span class="old">IMG_004.jpg</span><span class="new">Taipei_004.jpg</span></div>
+              <div class="row"><span class="kind">文件夹</span><span class="old">旅行</span><span class="new">Taipei_旅行</span></div>
+              <div class="row"><span class="kind">JPG</span><span class="old">IMG_001.jpg</span><span class="new">Taipei_001.jpg</span></div>
+              <div class="row"><span class="kind">JPG</span><span class="old">IMG_002.jpg</span><span class="new">Taipei_002.jpg</span></div>
+              <div class="row"><span class="kind">JPG</span><span class="old">IMG_003.jpg</span><span class="new">Taipei_003.jpg</span></div>
+              <div class="row"><span class="kind">JPG</span><span class="old">IMG_004.jpg</span><span class="new">Taipei_004.jpg</span></div>
             </div>
             <aside class="rules">
               <div class="nav-item" data-i18n="mock.remove">删除 IMG_</div>
@@ -74,7 +77,7 @@
             </aside>
           </div>
           <div class="app-foot">
-            <span data-i18n="mock.files">128 个文件</span>
+            <span data-i18n="mock.files">128 个项目</span>
             <span class="status" data-i18n="mock.ready">就绪</span>
             <button class="rename-btn" type="button" data-i18n="mock.renameBtn">重命名 128</button>
           </div>
@@ -82,36 +85,156 @@
       </div>
     </section>
 
-    <section class="wrap preview-block">
-      <div>
-        <h2 data-i18n="home.featureTitle">改之前，先看新名字</h2>
-        <p class="lead" data-i18n="home.featureLead">规则一改，列表立刻更新。未点「重命名」前不会写入磁盘；有冲突则整批阻止。</p>
+    <section class="wrap proof">
+      <div><strong data-i18n="home.statRules">9</strong><span data-i18n="home.statRulesLabel">种规则</span></div>
+      <div><strong data-i18n="home.statFiles">10K+</strong><span data-i18n="home.statFilesLabel">文件规模</span></div>
+      <div><strong data-i18n="home.statFolders">文件夹</strong><span data-i18n="home.statFoldersLabel">也可重命名</span></div>
+      <div><strong data-i18n="home.statSafe">0</strong><span data-i18n="home.statSafeLabel">覆盖已有文件</span></div>
+    </section>
+
+    <section class="wrap section-pillars" id="features">
+      <div class="section-head">
+        <span class="eyebrow" data-i18n="home.pillarsEyebrow">核心能力</span>
+        <h2 data-i18n="home.pillarsTitle">看得见，改得准，丢不了</h2>
+        <p class="section-lead" data-i18n="home.pillarsLead">从导入到执行，每一步都先预览、再校验、最后才写入磁盘。</p>
       </div>
-      <div class="demo-flow">
-        <div class="from">IMG_001.jpg</div>
-        <div class="arrow">↓</div>
-        <div class="to">Taipei_001.jpg</div>
+      <div class="pillar-grid">
+        <article>
+          <span class="idx">01</span>
+          <h3 data-i18n="home.pillar1Title">实时预览</h3>
+          <p data-i18n="home.pillar1Desc">规则一改，新文件名立刻更新。预览阶段不写磁盘，无需点击生成。</p>
+        </article>
+        <article>
+          <span class="idx">02</span>
+          <h3 data-i18n="home.pillar2Title">规则组合</h3>
+          <p data-i18n="home.pillar2Desc">9 种规则可叠加、排序、启用/禁用。前缀 + 编号 + 日期，一次配好。</p>
+        </article>
+        <article>
+          <span class="idx">03</span>
+          <h3 data-i18n="home.pillar3Title">安全校验</h3>
+          <p data-i18n="home.pillar3Desc">重名、覆盖、空名、非法字符、无权限——有错误就阻止执行。</p>
+        </article>
+        <article>
+          <span class="idx">04</span>
+          <h3 data-i18n="home.pillar4Title">撤销与历史</h3>
+          <p data-i18n="home.pillar4Desc">每次重命名自动存档。完成提示或历史页一键恢复原名。</p>
+        </article>
       </div>
     </section>
 
-    <section class="wrap section">
-      <h2 class="section-title" data-i18n="home.featuresTitle">功能</h2>
-      <div class="feature-grid">
-        <article class="feature-card">
-          <div class="icon">⚡</div>
-          <h3 data-i18n="home.featureTitle">改之前，先看新名字</h3>
-          <p data-i18n="home.featureLead">规则一改，列表立刻更新。未点「重命名」前不会写入磁盘；有冲突则整批阻止。</p>
+    <section class="section-rules">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="eyebrow" data-i18n="home.rulesEyebrow">重命名规则</span>
+          <h2 data-i18n="home.rulesTitle">9 种规则，自由组合</h2>
+          <p class="section-lead" data-i18n="home.rulesLead">摄影、截图、电商 SKU、文档、文件夹——常见整理场景都能覆盖。</p>
+        </div>
+        <div class="rules-grid">
+          <div class="rule-chip"><span class="rule-name" data-i18n="home.ruleReplace">替换</span><span class="rule-desc" data-i18n="home.ruleReplaceDesc">查找并替换文本</span></div>
+          <div class="rule-chip"><span class="rule-name" data-i18n="home.rulePrefix">前缀</span><span class="rule-desc" data-i18n="home.rulePrefixDesc">在文件名前插入</span></div>
+          <div class="rule-chip"><span class="rule-name" data-i18n="home.ruleSuffix">后缀</span><span class="rule-desc" data-i18n="home.ruleSuffixDesc">在扩展名前插入</span></div>
+          <div class="rule-chip"><span class="rule-name" data-i18n="home.ruleRemove">删除</span><span class="rule-desc" data-i18n="home.ruleRemoveDesc">移除指定文本</span></div>
+          <div class="rule-chip"><span class="rule-name" data-i18n="home.ruleNumber">编号</span><span class="rule-desc" data-i18n="home.ruleNumberDesc">001、002 顺序编号</span></div>
+          <div class="rule-chip"><span class="rule-name" data-i18n="home.ruleCase">大小写</span><span class="rule-desc" data-i18n="home.ruleCaseDesc">小写、大写、标题</span></div>
+          <div class="rule-chip"><span class="rule-name" data-i18n="home.ruleDate">日期</span><span class="rule-desc" data-i18n="home.ruleDateDesc">创建/修改/当前日期</span></div>
+          <div class="rule-chip"><span class="rule-name" data-i18n="home.ruleCleanup">清理</span><span class="rule-desc" data-i18n="home.ruleCleanupDesc">空格、符号、重音</span></div>
+          <div class="rule-chip"><span class="rule-name" data-i18n="home.ruleRegex">正则</span><span class="rule-desc" data-i18n="home.ruleRegexDesc">高级模式匹配</span></div>
+        </div>
+        <div class="rename-theater">
+          <span class="theater-from">IMG_001.jpg</span>
+          <span class="theater-arrow" aria-hidden="true"></span>
+          <span class="theater-to">Taipei_001.jpg</span>
+          <span class="theater-note" data-i18n="home.exampleSteps">删除 IMG_ + 前缀 Taipei_ + 编号</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="wrap section-workflow">
+      <div class="section-head">
+        <span class="eyebrow" data-i18n="home.flowEyebrow">工作流程</span>
+        <h2 data-i18n="home.flowTitle">三步完成批量重命名</h2>
+      </div>
+      <div class="flow-grid">
+        <article>
+          <div class="flow-num">1</div>
+          <h3 data-i18n="home.flow1Title">添加</h3>
+          <p data-i18n="home.flow1Desc">拖拽文件或文件夹。可只重命名文件夹，或导入其中的内容。</p>
         </article>
-        <article class="feature-card">
-          <div class="icon">🛡</div>
-          <h3 data-i18n="home.featSafeTitle">安全</h3>
-          <p data-i18n="faq.a2">不会。若目标名已存在，或批量结果出现重名，重命名会被阻止。</p>
+        <article>
+          <div class="flow-num">2</div>
+          <h3 data-i18n="home.flow2Title">配置规则</h3>
+          <p data-i18n="home.flow2Desc">在右侧面板添加规则，列表实时显示新名称与状态。</p>
         </article>
-        <article class="feature-card">
-          <div class="icon">↩</div>
-          <h3 data-i18n="home.featUndoTitle">撤销</h3>
-          <p data-i18n="faq.a3">每次成功重命名都会写入历史，记录原路径与新路径。可从完成提示或历史页撤销，恢复原名。</p>
+        <article>
+          <div class="flow-num">3</div>
+          <h3 data-i18n="home.flow3Title">安全执行</h3>
+          <p data-i18n="home.flow3Desc">校验通过后一键重命名。两阶段临时名处理，支持 A↔B 互换。</p>
         </article>
+      </div>
+    </section>
+
+    <section class="wrap section-scenes">
+      <div class="section-head">
+        <span class="eyebrow" data-i18n="home.scenesEyebrow">适用场景</span>
+        <h2 data-i18n="home.scenesTitle">从相册到货架，一种流程</h2>
+      </div>
+      <div class="scene-list">
+        <div><strong data-i18n="home.scene1">摄影</strong><span>IMG_ → Taipei_001.jpg</span></div>
+        <div><strong data-i18n="home.scene2">截图</strong><span>Screenshot → 2026-08-14_desk</span></div>
+        <div><strong data-i18n="home.scene3">电商</strong><span>sku-001 · sku-002</span></div>
+        <div><strong data-i18n="home.scene4">文档</strong><span>日期 + 标题格式</span></div>
+        <div><strong data-i18n="home.scene5">文件夹</strong><span>旅行 → Taipei_旅行</span></div>
+      </div>
+    </section>
+
+    <section class="wrap section-bento">
+      <div class="section-head">
+        <span class="eyebrow" data-i18n="home.bentoEyebrow">更多特性</span>
+        <h2 data-i18n="home.bentoTitle">专业工具该有的细节</h2>
+      </div>
+      <dl class="detail-list">
+        <div>
+          <dt data-i18n="home.bentoImportTitle">灵活导入</dt>
+          <dd data-i18n="home.bentoImportDesc">拖拽、添加文件、添加文件夹。列表显示原名、新名、类型、大小、状态。支持搜索、全选、快速查看、在 Finder 中显示。</dd>
+        </div>
+        <div>
+          <dt data-i18n="home.bentoFolderTitle">文件与文件夹</dt>
+          <dd data-i18n="home.bentoFolderDesc">可只重命名文件夹，或只重命名其中的文件。底部范围切换：全部 / 文件 / 文件夹。</dd>
+        </div>
+        <div>
+          <dt data-i18n="home.bentoPresetTitle">预设模板</dt>
+          <dd data-i18n="home.bentoPresetDesc">内置摄影、截图、电商、文档模板。也可保存自己的规则组合。</dd>
+        </div>
+        <div>
+          <dt data-i18n="home.bentoPerfTitle">大规模处理</dt>
+          <dd data-i18n="home.bentoPerfDesc">支持 10,000+ 文件。预览在后台线程计算，不阻塞界面。</dd>
+        </div>
+        <div>
+          <dt data-i18n="home.bentoNativeTitle">原生 macOS</dt>
+          <dd data-i18n="home.bentoNativeDesc">SwiftUI + AppKit。浅色/深色自动适配。Universal：Apple 芯片与 Intel。</dd>
+        </div>
+        <div>
+          <dt data-i18n="home.bentoUpdateTitle">自动更新</dt>
+          <dd data-i18n="home.bentoUpdateDesc">Sparkle 应用内更新，EdDSA 签名验证。</dd>
+        </div>
+      </dl>
+    </section>
+
+    <section class="wrap section-safety">
+      <div class="safety-panel">
+        <div class="safety-copy">
+          <span class="eyebrow eyebrow-light" data-i18n="home.safetyEyebrow">安全机制</span>
+          <h2 data-i18n="home.safetyTitle">绝不丢失用户文件</h2>
+          <p data-i18n="home.safetyLead">重命名前全面校验，执行时使用临时名避免冲突，中断后可恢复。</p>
+        </div>
+        <ul class="safety-list">
+          <li data-i18n="home.safety1">禁止覆盖已有文件</li>
+          <li data-i18n="home.safety2">检测批量重名冲突</li>
+          <li data-i18n="home.safety3">拦截空文件名与非法字符</li>
+          <li data-i18n="home.safety4">检查目录写入权限</li>
+          <li data-i18n="home.safety5">两阶段临时重命名</li>
+          <li data-i18n="home.safety6">中断后自动恢复</li>
+        </ul>
       </div>
     </section>
 
@@ -119,7 +242,7 @@
       <div class="download-band">
         <div>
           <h2 data-i18n="home.downloadTitle">下载 FilesDesk</h2>
-          <p data-i18n="home.downloadLead">支持 macOS 14 及以上。开源免费，应用内通过 Sparkle 自动更新。</p>
+          <p data-i18n="home.downloadLead">macOS 14 及以上 · 开源免费 · Apple 芯片与 Intel</p>
         </div>
         <a class="button" data-download href="./download.html" data-i18n="home.downloadCta">获取最新版本</a>
       </div>
@@ -135,7 +258,7 @@
     </div>
   </footer>
   <script src="./more-apps.js"></script>
-  <script src="./i18n.js"></script>
+  <script src="./i18n.js?v=5"></script>
   <script src="./site.js"></script>
 </body>
 </html>
