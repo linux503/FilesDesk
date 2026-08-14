@@ -15,7 +15,7 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,600;0,9..40,700;1,9..40,400&family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./styles.css">
 </head>
-<body data-page="home">
+<body data-page="home" data-current-app="filesdesk">
   <header class="wrap site-header">
     <a class="brand" href="./">
       <img src="./assets/icon.png" alt="FilesDesk">
@@ -28,6 +28,7 @@
         <a href="./privacy.html" data-i18n="nav.privacy">隐私</a>
         <a href="./changelog.html" data-i18n="nav.changelog">更新</a>
       </nav>
+      <div data-more-apps></div>
       <div class="lang-switch" role="group" aria-label="Language">
         <button type="button" data-lang-btn="zh" class="active">中文</button>
         <button type="button" data-lang-btn="en">EN</button>
@@ -133,6 +134,7 @@
       <a href="https://github.com/linux503/FilesDesk" data-i18n="footer.github">GitHub</a>
     </div>
   </footer>
+  <script src="./more-apps.js"></script>
   <script src="./i18n.js"></script>
   <script src="./site.js"></script>
 </body>

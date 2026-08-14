@@ -8,7 +8,7 @@ const I18N = {
       privacy: { title: "隐私政策 — FilesDesk", desc: "FilesDesk 隐私说明。重命名在本地完成，更新通过 Sparkle 检查。" },
       changelog: { title: "更新日志 — FilesDesk", desc: "FilesDesk 版本更新与 Sparkle 更新记录。" }
     },
-    nav: { download: "下载", faq: "常见问题", privacy: "隐私", changelog: "更新" },
+    nav: { download: "下载", faq: "常见问题", privacy: "隐私", changelog: "更新", moreApps: "更多软件" },
     lang: { label: "语言", zh: "中文", en: "English" },
     home: {
       lede: "一次重命名上千个文件",
@@ -89,7 +89,7 @@ const I18N = {
       privacy: { title: "Privacy — FilesDesk", desc: "FilesDesk privacy policy. Renaming stays local; updates use Sparkle." },
       changelog: { title: "Changelog — FilesDesk", desc: "FilesDesk release history and Sparkle update feed." }
     },
-    nav: { download: "Download", faq: "FAQ", privacy: "Privacy", changelog: "Updates" },
+    nav: { download: "Download", faq: "FAQ", privacy: "Privacy", changelog: "Updates", moreApps: "More Apps" },
     lang: { label: "Language", zh: "中文", en: "English" },
     home: {
       lede: "Rename thousands of files at once",
@@ -206,6 +206,7 @@ function applyLang(lang) {
     btn.setAttribute("aria-pressed", btn.dataset.langBtn === lang ? "true" : "false");
   });
   localStorage.setItem("filesdesk-lang", lang);
+  window.refreshMoreApps?.();
 }
 
 function initI18n() {

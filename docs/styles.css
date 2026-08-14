@@ -87,6 +87,79 @@ nav a[aria-current="page"] {
   font-weight: 600;
 }
 
+/* More apps menu */
+.more-apps-menu {
+  position: relative;
+  list-style: none;
+}
+
+.more-apps-menu summary {
+  cursor: pointer;
+  color: var(--muted);
+  font-size: 0.94rem;
+  user-select: none;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.more-apps-menu summary::-webkit-details-marker { display: none; }
+
+.more-apps-menu summary::after {
+  content: "";
+  width: 0;
+  height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 5px solid currentColor;
+  opacity: 0.6;
+  margin-top: 2px;
+}
+
+.more-apps-menu[open] summary,
+.more-apps-menu summary:hover {
+  color: var(--ink);
+}
+
+.more-apps-panel {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  min-width: 240px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  box-shadow: var(--shadow);
+  padding: 8px;
+  z-index: 100;
+  animation: rise 0.2s ease both;
+}
+
+.more-apps-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  transition: background 0.12s;
+}
+
+.more-apps-item:hover {
+  background: rgba(13, 126, 168, 0.08);
+}
+
+.more-apps-name {
+  font-weight: 600;
+  font-size: 0.92rem;
+  color: var(--ink);
+}
+
+.more-apps-desc {
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
 .lang-switch {
   display: flex;
   align-items: center;
