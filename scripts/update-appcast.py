@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Insert a Sparkle appcast item for a GitHub Release zip."""
+"""Insert a Sparkle appcast item for a GitHub Release DMG."""
 from __future__ import annotations
 
 import argparse

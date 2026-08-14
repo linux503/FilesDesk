@@ -52,14 +52,12 @@ echo "$ARCHS_FOUND" | grep -qw arm64
 echo "$ARCHS_FOUND" | grep -qw x86_64
 DIST="$ROOT/build/dist"
 mkdir -p "$DIST"
-ZIP="$DIST/FilesDesk-$VERSION.zip"
 DMG="$DIST/FilesDesk-$VERSION.dmg"
-rm -f "$ZIP" "$DMG"
-ditto -c -k --keepParent "$APP" "$ZIP"
+rm -f "$DMG"
 bash "$ROOT/scripts/make-dmg.sh" "$APP" "$DMG"
 cp "$DMG" "$ROOT/docs/FilesDesk.dmg"
-LENGTH="$(stat -f%z "$ZIP")"
-SIG="$(python3 "$ROOT/scripts/sign-update.py" "$KEY_FILE" "$ZIP")"
+LENGTH="$(stat -f%z "$DMG")"
+SIG="$(python3 "$ROOT/scripts/sign-update.py" "$KEY_FILE" "$DMG")"
 
 echo "==> Tag $TAG"
 git add FilesDesk.xcodeproj/project.pbxproj CHANGELOG.md docs
@@ -70,13 +68,13 @@ git push origin "$TAG"
 
 echo "==> GitHub Release"
 NOTES="$(awk "/^## $VERSION/{flag=1;next}/^## /{flag=0}flag" CHANGELOG.md | sed '/^$/d')"
-gh release create "$TAG" "$ZIP" "$DMG" \
+gh release create "$TAG" "$DMG" \
   --title "FilesDesk $VERSION" \
   --notes "${NOTES:-FilesDesk $VERSION}"
 
-URL="$(gh release view "$TAG" --json assets --jq ".assets[] | select(.name==\"FilesDesk-$VERSION.zip\") | .url")"
+URL="$(gh release view "$TAG" --json assets --jq ".assets[] | select(.name==\"FilesDesk-$VERSION.dmg\") | .url")"
 if [[ -z "$URL" ]]; then
-  URL="https://github.com/linux503/FilesDesk/releases/download/$TAG/FilesDesk-$VERSION.zip"
+  URL="https://github.com/linux503/FilesDesk/releases/download/$TAG/FilesDesk-$VERSION.dmg"
 fi
 
 python3 "$ROOT/scripts/update-appcast.py" \
