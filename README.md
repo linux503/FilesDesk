@@ -48,12 +48,22 @@ Build → Test → Tag → Release → Website sync
 ```
 
 ```bash
+make test
 make release VERSION=1.0.1
 ```
 
 The script builds the app, runs tests, tags `vVERSION`, publishes a GitHub Release, signs the zip for Sparkle, and updates `docs/appcast.xml`.
 
-Store the Sparkle private key as `sparkle/eddsa-private.key` locally and as the `SPARKLE_EDDSA_PRIVATE_KEY` GitHub secret. Never commit that file.
+Store the Sparkle private key as `sparkle/eddsa-private.key` locally. The GitHub secret `SPARKLE_EDDSA_PRIVATE_KEY` is already configured for this repository. Never commit the private key.
+
+GitHub Actions files live in `.github/workflows`. Pushing them requires a token with the `workflow` scope:
+
+```bash
+gh auth refresh -h github.com -s workflow
+git add .github
+git commit -m "Add CI, Pages, and Release workflows."
+git push
+```
 
 ## License
 
