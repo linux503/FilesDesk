@@ -98,6 +98,8 @@ enum RenameEngine: Sendable {
             var parameters = rule.parameters
             parameters.replacementText = ""
             return replace(stem, parameters: parameters)
+        case .removeLeading:
+            return dropLeading(stem, count: rule.parameters.leadingCountValue)
         case .numbering:
             return numbering(stem, parameters: rule.parameters, index: context.index)
         case .caseChange:
@@ -152,6 +154,12 @@ enum RenameEngine: Sendable {
 
     private static func suffix(_ stem: String, text: String) -> String {
         stem + text
+    }
+
+    private static func dropLeading(_ stem: String, count: Int) -> String {
+        let n = max(0, count)
+        guard n > 0 else { return stem }
+        return String(stem.dropFirst(n))
     }
 
     private static func numbering(_ stem: String, parameters: RuleParameters, index: Int) -> String {

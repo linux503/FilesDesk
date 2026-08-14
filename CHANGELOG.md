@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.2 — 2026-08-14
+
+- New rule: drop the first N characters from a name
+
 ## 1.1.1 — 2026-08-14
 
 - Live preview updates as soon as you type a rule

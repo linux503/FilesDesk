@@ -212,6 +212,15 @@ struct RuleEditor: View {
             Toggle("区分大小写", isOn: $rule.parameters.matchCase)
             Toggle("全部删除", isOn: $rule.parameters.replaceAll)
 
+        case .removeLeading:
+            LabeledField("位数") {
+                TextField("1", text: intText(Binding(
+                    get: { rule.parameters.leadingCountValue },
+                    set: { rule.parameters.leadingCountValue = $0 }
+                )))
+                .textFieldStyle(.roundedBorder)
+            }
+
         case .numbering:
             LabeledField("起始") {
                 TextField("1", text: intText($rule.parameters.numberingStart))

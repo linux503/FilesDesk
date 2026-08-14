@@ -19,6 +19,51 @@ struct RenameEngineTests {
         #expect(result == "Taipei_001.jpg")
     }
 
+    @Test func removeLeadingDropsPrefixCharacters() {
+        var rule = RenameRule.make(.removeLeading)
+        rule.parameters.leadingCountValue = 4
+        let context = ApplyContext(index: 0, createdAt: .now, modifiedAt: .now, now: .now)
+        let result = RenameEngine.apply(rules: [rule], to: "4000-AA-1 (16)", context: context, isDirectory: true)
+        #expect(result == "-AA-1 (16)")
+    }
+
+    @Test func removeLeadingKeepsExtensionOnFiles() {
+        var rule = RenameRule.make(.removeLeading)
+        rule.parameters.leadingCountValue = 4
+        let context = ApplyContext(index: 0, createdAt: .now, modifiedAt: .now, now: .now)
+        let result = RenameEngine.apply(rules: [rule], to: "IMG_001.jpg", context: context)
+        #expect(result == "001.jpg")
+    }
+
+    @Test func removeLeadingThenNumberFolders() {
+        var drop = RenameRule.make(.removeLeading)
+        drop.parameters.leadingCountValue = 4
+        var number = RenameRule.make(.numbering)
+        number.parameters.numberingStart = 4001
+        number.parameters.numberingDigits = 4
+        number.parameters.numberingSeparator = ""
+        number.parameters.numberingPosition = .prefix
+        let context = ApplyContext(index: 0, createdAt: .now, modifiedAt: .now, now: .now)
+        let result = RenameEngine.apply(
+            rules: [drop, number],
+            to: "4000-AA-1 (16)",
+            context: context,
+            isDirectory: true
+        )
+        #expect(result == "4001-AA-1 (16)")
+    }
+
+    @Test func oldSavedRulesDecodeWithoutLeadingCount() throws {
+        let json = """
+        [{"id":"00000000-0000-0000-0000-000000000001","isEnabled":true,"kind":"remove","parameters":{"findText":"IMG_","replacementText":"","matchCase":false,"replaceAll":true,"affixText":"","numberingStart":1,"numberingStep":1,"numberingDigits":3,"numberingPosition":"prefix","numberingSeparator":"_","caseStyle":"lowercase","dateSource":"current","dateFormat":"yyyy-MM-dd","datePosition":"prefix","dateSeparator":"_","trimWhitespace":true,"collapseWhitespace":true,"spacesToUnderscores":false,"spacesToHyphens":false,"removeSpecialCharacters":false,"removeDiacritics":false,"regexPattern":"","regexTemplate":"","regexCaseInsensitive":false}}]
+        """
+        let rules = try JSONDecoder().decode([RenameRule].self, from: Data(json.utf8))
+        #expect(rules.count == 1)
+        #expect(rules[0].kind == .remove)
+        #expect(rules[0].parameters.findText == "IMG_")
+        #expect(rules[0].parameters.leadingCountValue == 1)
+    }
+
     @Test func numberingPadsAndPrefixes() {
         var rule = RenameRule.make(.numbering)
         rule.parameters.numberingStart = 1

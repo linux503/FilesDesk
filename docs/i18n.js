@@ -13,10 +13,10 @@ const I18N = {
     home: {
       badge: "macOS 14+ · Apple 芯片 & Intel · 原生",
       lede: "一次重命名上千个文件",
-      sub: "拖拽导入文件或文件夹，组合 9 种规则，输入即预览。智能建议、12 套预设、文件夹编号。原生 Mac 工具，绝不覆盖已有文件。",
+      sub: "拖拽导入文件或文件夹，组合 10 种规则，输入即预览。智能建议、12 套预设、文件夹编号。原生 Mac 工具，绝不覆盖已有文件。",
       cta: "下载 Mac 版",
       source: "查看源码",
-      statRules: "9",
+      statRules: "10",
       statRulesLabel: "种规则",
       statFiles: "12",
       statFilesLabel: "套预设",
@@ -36,12 +36,13 @@ const I18N = {
       pillar4Title: "撤销与历史",
       pillar4Desc: "每次重命名自动存档。完成提示或历史页一键恢复原名。",
       rulesEyebrow: "重命名规则",
-      rulesTitle: "9 种规则，自由组合",
+      rulesTitle: "10 种规则，自由组合",
       rulesLead: "摄影、截图、电商、文档、视频、微信、文件夹——常见整理都能覆盖。",
       ruleReplace: "替换", ruleReplaceDesc: "查找并替换文本",
       rulePrefix: "前缀", rulePrefixDesc: "在文件名前插入",
       ruleSuffix: "后缀", ruleSuffixDesc: "在扩展名前插入",
       ruleRemove: "删除", ruleRemoveDesc: "移除指定文本",
+      ruleRemoveHead: "删除前几位", ruleRemoveHeadDesc: "去掉开头指定位数",
       ruleNumber: "编号", ruleNumberDesc: "001、002 顺序编号",
       ruleCase: "大小写", ruleCaseDesc: "小写、大写、标题",
       ruleDate: "日期", ruleDateDesc: "创建/修改/当前日期",
@@ -92,7 +93,7 @@ const I18N = {
       featureTitle: "改之前，先看新名字",
       featureLead: "规则一改，列表立刻更新。未点「重命名」前不会写入磁盘；有冲突则整批阻止。",
       downloadTitle: "下载 FilesDesk",
-      downloadLead: "macOS 14 及以上 · 开源免费 · Apple 芯片与 Intel · 当前 1.1.1",
+      downloadLead: "macOS 14 及以上 · 开源免费 · Apple 芯片与 Intel · 当前 1.1.2",
       downloadCta: "获取最新版本",
       version: "版本",
       featSafeTitle: "安全",
@@ -101,7 +102,7 @@ const I18N = {
     },
     mock: {
       rename: "重命名", presets: "预设", history: "历史", settings: "设置",
-      remove: "删除 4000", prefix: "前缀 Taipei_", numbering: "编号 4001",
+      remove: "删除前 4 位", prefix: "前缀 Taipei_", numbering: "编号 4001",
       suggest: "建议：去掉拷贝编号",
       files: "61 个项目", ready: "就绪", renameBtn: "重命名 13"
     },
@@ -132,9 +133,11 @@ const I18N = {
       q6: "需要账号吗？",
       a6: "不需要。无登录、无云同步、无账号体系。",
       q7: "怎么把文件夹改成 4001、4002、4003？",
-      a7: "范围选「文件夹」。先用「删除」去掉原来的 4000，再加「编号」：起始 4001、位数 4、分隔符留空、位置选文件名前。",
+      a7: "范围选「文件夹」。加「删除前几位」，位数填 4，再加「编号」：起始 4001、位数 4、分隔符留空、位置选文件名前。",
       q8: "刷新按钮做什么？",
-      a8: "从磁盘重新读取当前名称、权限和是否还在。适合在 Finder 里改过文件后再继续重命名。"
+      a8: "从磁盘重新读取当前名称、权限和是否还在。适合在 Finder 里改过文件后再继续重命名。",
+      q9: "「删除前几位」和「删除」有什么区别？",
+      a9: "「删除」去掉指定文字。「删除前几位」不管内容，从文件名开头去掉固定个数的字符，适合 IMG_、4000 这类固定长度前缀。"
     },
     privacy: {
       title: "隐私政策",
@@ -147,6 +150,10 @@ const I18N = {
     changelog: {
       title: "更新日志",
       intro: "应用通过 Sparkle 读取此更新源。安装包发布在 GitHub Releases。",
+      v112Date: "2026 年 8 月 14 日",
+      v112Items: [
+        "新增规则：删除前几位，从文件名开头去掉指定个数的字符"
+      ],
       v111Date: "2026 年 8 月 14 日",
       v111Items: [
         "输入规则后立即预览新名称",
@@ -188,10 +195,10 @@ const I18N = {
     home: {
       badge: "macOS 14+ · Apple silicon & Intel · Native",
       lede: "Rename thousands of files at once",
-      sub: "Drag in files or folders, combine 9 rules, and see new names as you type. Smart suggestions, 12 presets, folder numbering. A native Mac tool that never overwrites existing files.",
+      sub: "Drag in files or folders, combine 10 rules, and see new names as you type. Smart suggestions, 12 presets, folder numbering. A native Mac tool that never overwrites existing files.",
       cta: "Download for Mac",
       source: "View source",
-      statRules: "9",
+      statRules: "10",
       statRulesLabel: "Rule types",
       statFiles: "12",
       statFilesLabel: "Presets",
@@ -211,12 +218,13 @@ const I18N = {
       pillar4Title: "Undo & history",
       pillar4Desc: "Every batch is saved. Restore original names from the banner or History page.",
       rulesEyebrow: "Rename rules",
-      rulesTitle: "9 rules, freely combined",
+      rulesTitle: "10 rules, freely combined",
       rulesLead: "Photos, screenshots, e-commerce, documents, videos, WeChat, folders — everyday cleanup, covered.",
       ruleReplace: "Replace", ruleReplaceDesc: "Find and replace text",
       rulePrefix: "Prefix", rulePrefixDesc: "Insert at the start",
       ruleSuffix: "Suffix", ruleSuffixDesc: "Insert before extension",
       ruleRemove: "Remove", ruleRemoveDesc: "Delete matching text",
+      ruleRemoveHead: "Drop first N", ruleRemoveHeadDesc: "Remove characters from the start",
       ruleNumber: "Number", ruleNumberDesc: "001, 002 sequential",
       ruleCase: "Case", ruleCaseDesc: "Lower, upper, title",
       ruleDate: "Date", ruleDateDesc: "Created, modified, now",
@@ -267,7 +275,7 @@ const I18N = {
       featureTitle: "See the new name first",
       featureLead: "Rules update the list as you type. Nothing is written until you rename, and conflicts block the batch.",
       downloadTitle: "Download FilesDesk",
-      downloadLead: "macOS 14+ · Free & open source · Apple silicon and Intel · Now 1.1.1",
+      downloadLead: "macOS 14+ · Free & open source · Apple silicon and Intel · Now 1.1.2",
       downloadCta: "Get the latest build",
       version: "Version",
       featSafeTitle: "Safety",
@@ -276,7 +284,7 @@ const I18N = {
     },
     mock: {
       rename: "Rename", presets: "Presets", history: "History", settings: "Settings",
-      remove: "Remove 4000", prefix: "Prefix Taipei_", numbering: "Number 4001",
+      remove: "Drop first 4", prefix: "Prefix Taipei_", numbering: "Number 4001",
       suggest: "Suggestion: strip copy numbers",
       files: "61 items", ready: "Ready", renameBtn: "Rename 13"
     },
@@ -307,9 +315,11 @@ const I18N = {
       q6: "Is there an account?",
       a6: "No. No login, cloud sync, or account system.",
       q7: "How do I rename folders to 4001, 4002, 4003?",
-      a7: "Set scope to Folders. Use Remove to strip the original 4000, then Numbering: start 4001, 4 digits, empty separator, position Before name.",
+      a7: "Set scope to Folders. Add Drop first N with 4 characters, then Numbering: start 4001, 4 digits, empty separator, position Before name.",
       q8: "What does Refresh do?",
-      a8: "It reloads current names, permissions, and whether items still exist on disk. Use it after you change files in Finder."
+      a8: "It reloads current names, permissions, and whether items still exist on disk. Use it after you change files in Finder.",
+      q9: "Drop first N vs Remove?",
+      a9: "Remove deletes matching text. Drop first N always strips a fixed number of characters from the start — useful for prefixes like IMG_ or 4000."
     },
     privacy: {
       title: "Privacy",
@@ -322,6 +332,10 @@ const I18N = {
     changelog: {
       title: "Changelog",
       intro: "The app checks this feed with Sparkle. Release archives are on GitHub.",
+      v112Date: "August 14, 2026",
+      v112Items: [
+        "New rule: drop the first N characters from a name"
+      ],
       v111Date: "August 14, 2026",
       v111Items: [
         "New names update as soon as you type a rule",

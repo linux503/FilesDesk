@@ -5,6 +5,7 @@ enum RuleKind: String, Codable, CaseIterable, Sendable, Identifiable {
     case prefix
     case suffix
     case remove
+    case removeLeading
     case numbering
     case caseChange
     case date
@@ -19,6 +20,7 @@ enum RuleKind: String, Codable, CaseIterable, Sendable, Identifiable {
         case .prefix: "前缀"
         case .suffix: "后缀"
         case .remove: "删除"
+        case .removeLeading: "删除前几位"
         case .numbering: "编号"
         case .caseChange: "大小写"
         case .date: "日期"
@@ -33,6 +35,7 @@ enum RuleKind: String, Codable, CaseIterable, Sendable, Identifiable {
         case .prefix: "在文件名前插入"
         case .suffix: "在扩展名前插入"
         case .remove: "删除匹配的文本"
+        case .removeLeading: "从文件名开头去掉指定个数的字符"
         case .numbering: "添加顺序编号"
         case .caseChange: "更改字母大小写"
         case .date: "插入日期"
@@ -47,6 +50,7 @@ enum RuleKind: String, Codable, CaseIterable, Sendable, Identifiable {
         case .prefix: "arrow.left.to.line"
         case .suffix: "arrow.right.to.line"
         case .remove: "minus.circle"
+        case .removeLeading: "delete.backward"
         case .numbering: "number"
         case .caseChange: "textformat"
         case .date: "calendar"
@@ -151,6 +155,14 @@ struct RuleParameters: Codable, Hashable, Sendable {
     var regexPattern: String = ""
     var regexTemplate: String = ""
     var regexCaseInsensitive: Bool = false
+
+    /// Characters to drop from the start. Optional so old saved rules still decode.
+    var leadingCount: Int? = 1
+
+    var leadingCountValue: Int {
+        get { max(0, leadingCount ?? 1) }
+        set { leadingCount = max(0, newValue) }
+    }
 }
 
 struct RenameRule: Identifiable, Codable, Hashable, Sendable {
@@ -188,6 +200,8 @@ struct RenameRule: Identifiable, Codable, Hashable, Sendable {
             parameters.dateFormat = "yyyy-MM-dd"
             parameters.datePosition = .prefix
             parameters.dateSeparator = "_"
+        case .removeLeading:
+            parameters.leadingCount = 1
         case .cleanup:
             parameters.trimWhitespace = true
             parameters.collapseWhitespace = true
@@ -209,6 +223,8 @@ struct RenameRule: Identifiable, Codable, Hashable, Sendable {
             return p.affixText.isEmpty ? "添加后缀" : "以“\(p.affixText)”结尾"
         case .remove:
             return p.findText.isEmpty ? "输入要删除的文本" : "删除“\(p.findText)”"
+        case .removeLeading:
+            return "删除前 \(p.leadingCountValue) 位"
         case .numbering:
             let sample = String(format: "%0\(max(1, p.numberingDigits))d", p.numberingStart)
             return "\(p.numberingPosition.title) · \(sample)"
