@@ -78,6 +78,56 @@ struct RenameEngineTests {
         )
         #expect(result == "TRIP.2024")
     }
+
+    @Test func numberingCountsOnlyFoldersInFolderScope() {
+        var remove = RenameRule.make(.remove)
+        remove.parameters.findText = "4000"
+        var number = RenameRule.make(.numbering)
+        number.parameters.numberingStart = 4001
+        number.parameters.numberingDigits = 4
+        number.parameters.numberingSeparator = ""
+        number.parameters.numberingPosition = .prefix
+
+        func folder(_ name: String, path: String) -> FileSnapshot {
+            FileSnapshot(
+                id: UUID(),
+                originalName: name,
+                proposedName: name,
+                directoryPath: "/tmp",
+                originalPath: path,
+                fileSize: 0,
+                typeIdentifier: "public.folder",
+                createdAt: .now,
+                modifiedAt: .now,
+                directoryWritable: true,
+                hasSecurityAccess: true,
+                isDirectory: true
+            )
+        }
+        let first = folder("4000-AA-8-14-1 (16)", path: "/tmp/4000-AA-8-14-1 (16)")
+        let file = FileSnapshot(
+            id: UUID(),
+            originalName: "1.jpg",
+            proposedName: "1.jpg",
+            directoryPath: "/tmp/4000-AA-8-14-1 (16)",
+            originalPath: "/tmp/4000-AA-8-14-1 (16)/1.jpg",
+            fileSize: 1,
+            typeIdentifier: "public.jpeg",
+            createdAt: .now,
+            modifiedAt: .now,
+            directoryWritable: true,
+            hasSecurityAccess: true
+        )
+        let second = folder("4000-AA-8-14-1 (219)", path: "/tmp/4000-AA-8-14-1 (219)")
+        let names = RenameEngine.proposedNames(
+            for: [first, file, second],
+            rules: [remove, number],
+            scope: .folders
+        )
+        #expect(names[first.id] == "4001-AA-8-14-1 (16)")
+        #expect(names[file.id] == "1.jpg")
+        #expect(names[second.id] == "4002-AA-8-14-1 (219)")
+    }
 }
 
 struct RenameValidatorTests {

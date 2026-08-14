@@ -217,6 +217,34 @@ enum FileService: Sendable {
         return false
     }
 
+    static func refresh(
+        url: URL,
+        parentBookmark: Data?,
+        fileBookmark: Data?
+    ) -> ImportedFile? {
+        let standardized = url.standardizedFileURL
+        guard FileManager.default.fileExists(atPath: standardized.path) else { return nil }
+        let keys: Set<URLResourceKey> = [
+            .isDirectoryKey,
+            .isPackageKey,
+            .isHiddenKey,
+            .fileSizeKey,
+            .contentTypeKey,
+            .creationDateKey,
+            .contentModificationDateKey,
+            .localizedTypeDescriptionKey
+        ]
+        let values = try? standardized.resourceValues(forKeys: keys)
+        let isDirectory = values?.isDirectory == true && values?.isPackage != true
+        return makeImported(
+            url: standardized,
+            values: values,
+            parentBookmark: parentBookmark,
+            fileBookmark: fileBookmark ?? makeBookmark(for: standardized),
+            isDirectory: isDirectory
+        )
+    }
+
     static func makeBookmark(for url: URL) -> Data? {
         try? url.bookmarkData(
             options: .withSecurityScope,

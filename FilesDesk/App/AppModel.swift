@@ -37,6 +37,7 @@ final class AppModel {
     var isImporting = false
     var isRenaming = false
     var isPreviewing = false
+    var isRefreshing = false
     var renameProgress: Double?
     var validation: ValidationReport = .empty
     var lastCompletion: RenameCompletion?
@@ -97,7 +98,7 @@ final class AppModel {
     }
 
     var canRename: Bool {
-        !isImporting && !isRenaming && !isPreviewing && validation.canRename
+        !isImporting && !isRenaming && !isRefreshing && validation.canRename
     }
 
     var renameButtonTitle: String {
@@ -147,17 +148,17 @@ final class AppModel {
         let context = modelContext
         let descriptor = FetchDescriptor<RenamePreset>()
         let existing = (try? context.fetch(descriptor)) ?? []
-        let seededKey = "filesdesk.didSeedPresets"
-        if existing.isEmpty, !UserDefaults.standard.bool(forKey: seededKey) {
-            for preset in BuiltInPresets.all() {
-                context.insert(preset)
-            }
-            try? context.save()
-        } else {
-            BuiltInPresets.localizeBuiltInNames(existing)
+        BuiltInPresets.localizeBuiltInNames(existing)
+        let names = Set(existing.map(\.name))
+        var added = false
+        for preset in BuiltInPresets.all() where !names.contains(preset.name) {
+            context.insert(preset)
+            added = true
+        }
+        if added || !existing.isEmpty {
             try? context.save()
         }
-        UserDefaults.standard.set(true, forKey: seededKey)
+        UserDefaults.standard.set(true, forKey: "filesdesk.didSeedPresets")
     }
 
     func addFiles() {
@@ -317,6 +318,63 @@ final class AppModel {
 
     func updateRules() {
         persistSettings()
+        schedulePreview()
+    }
+
+    func refreshFileStates() {
+        guard !files.isEmpty, !isRefreshing, !isRenaming, !isImporting else { return }
+        Task { await performRefresh() }
+    }
+
+    private func performRefresh() async {
+        isRefreshing = true
+        errorMessage = nil
+        defer { isRefreshing = false }
+
+        var missingIDs: [UUID] = []
+        for file in files {
+            SecurityScopeStore.shared.retain(file.originalURL)
+            SecurityScopeStore.shared.retain(bookmark: file.bookmark)
+            SecurityScopeStore.shared.retain(bookmark: file.parentBookmark)
+
+            let resolved = file.bookmark.flatMap(FileService.resolveBookmark)
+                ?? file.parentBookmark.flatMap(FileService.resolveBookmark).map {
+                    $0.appendingPathComponent(file.originalName)
+                }
+                ?? file.originalURL
+
+            guard let imported = FileService.refresh(
+                url: resolved,
+                parentBookmark: file.parentBookmark,
+                fileBookmark: file.bookmark
+            ) else {
+                missingIDs.append(file.id)
+                continue
+            }
+
+            file.originalURL = imported.url
+            file.originalName = imported.name
+            file.directoryURL = imported.directoryURL
+            file.fileSize = imported.fileSize
+            file.typeIdentifier = imported.typeIdentifier
+            file.typeName = imported.typeName
+            file.createdAt = imported.createdAt
+            file.modifiedAt = imported.modifiedAt
+            file.bookmark = imported.bookmark ?? file.bookmark
+            file.parentBookmark = imported.parentBookmark ?? file.parentBookmark
+            file.directoryWritable = imported.directoryWritable
+            file.hasSecurityAccess = imported.hasSecurityAccess
+            file.isDirectory = imported.isDirectory
+            file.status = .previewing
+            file.statusMessage = "正在刷新"
+        }
+
+        if !missingIDs.isEmpty {
+            let gone = Set(missingIDs)
+            files.removeAll { gone.contains($0.id) }
+            selection.subtract(gone)
+        }
+
         schedulePreview()
     }
 
@@ -537,28 +595,22 @@ final class AppModel {
             return
         }
 
-        isPreviewing = true
+        if snapshots.count <= 800 {
+            let names = RenameEngine.proposedNames(for: snapshots, rules: currentRules, scope: scope)
+            applyProposedNames(names)
+        } else {
+            isPreviewing = true
+        }
+
         previewTask = Task { [weak self] in
             guard let self else { return }
             do {
-                try await Task.sleep(for: .milliseconds(120))
+                try await Task.sleep(for: .milliseconds(40))
                 try Task.checkCancellation()
 
-                var names = await Task.detached(priority: .userInitiated) {
-                    RenameEngine.proposedNames(for: snapshots, rules: currentRules)
+                let names = await Task.detached(priority: .userInitiated) {
+                    RenameEngine.proposedNames(for: snapshots, rules: currentRules, scope: scope)
                 }.value
-                if scope != .all {
-                    for file in snapshots {
-                        switch scope {
-                        case .files:
-                            if file.isDirectory { names[file.id] = file.originalName }
-                        case .folders:
-                            if !file.isDirectory { names[file.id] = file.originalName }
-                        case .all:
-                            break
-                        }
-                    }
-                }
                 try Task.checkCancellation()
 
                 let report = await Task.detached(priority: .userInitiated) {

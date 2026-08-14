@@ -38,6 +38,15 @@ struct RenameStatusBar: View {
             .foregroundStyle(statusColor == .red ? Color.red : .secondary)
             .help(statusLabel)
 
+            Button {
+                model.refreshFileStates()
+            } label: {
+                Image(systemName: "arrow.clockwise")
+            }
+            .buttonStyle(.borderless)
+            .disabled(model.files.isEmpty || model.isRefreshing || model.isImporting || model.isRenaming)
+            .help("刷新文件状态")
+
             Spacer()
 
             Button(model.renameButtonTitle) {
@@ -60,6 +69,7 @@ struct RenameStatusBar: View {
     }
 
     private var statusLabel: String {
+        if model.isRefreshing { return "正在刷新文件" }
         if model.isPreviewing { return "正在更新预览" }
         if model.files.isEmpty { return "拖入文件或文件夹开始" }
         return model.validation.statusTitle

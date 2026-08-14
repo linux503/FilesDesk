@@ -42,6 +42,12 @@ private struct RenameToolbar: ToolbarContent {
             }
         }
         ToolbarItemGroup(placement: .automatic) {
+            Button("刷新", systemImage: "arrow.clockwise") {
+                model.refreshFileStates()
+            }
+            .disabled(model.files.isEmpty || model.isRefreshing || model.isImporting || model.isRenaming)
+            .help("从磁盘重新读取名称、权限和是否还在")
+
             Button("快速查看", systemImage: "eye") {
                 model.quickLookSelected()
             }

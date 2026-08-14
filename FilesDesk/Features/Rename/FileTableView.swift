@@ -100,6 +100,10 @@ struct FileTableView: View {
                 ProgressView("正在添加文件…")
                     .padding(20)
                     .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
+            } else if model.isRefreshing {
+                ProgressView("正在刷新…")
+                    .padding(20)
+                    .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
             }
         }
     }

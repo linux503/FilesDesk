@@ -29,19 +29,32 @@ enum RenameEngine: Sendable {
     static func proposedNames(
         for files: [FileSnapshot],
         rules: [RenameRule],
-        now: Date = .now
+        now: Date = .now,
+        scope: RenameScope = .all
     ) -> [UUID: String] {
         let enabled = rules.filter(\.isEnabled)
         var result: [UUID: String] = [:]
         result.reserveCapacity(files.count)
+        var numberingIndex = 0
 
-        for (index, file) in files.enumerated() {
+        for file in files {
+            let inScope: Bool
+            switch scope {
+            case .all: inScope = true
+            case .files: inScope = !file.isDirectory
+            case .folders: inScope = file.isDirectory
+            }
+            if !inScope {
+                result[file.id] = file.originalName
+                continue
+            }
             let context = ApplyContext(
-                index: index,
+                index: numberingIndex,
                 createdAt: file.createdAt,
                 modifiedAt: file.modifiedAt,
                 now: now
             )
+            numberingIndex += 1
             result[file.id] = apply(
                 rules: enabled,
                 to: file.originalName,

@@ -3,7 +3,7 @@ const REPO = "linux503/FilesDesk";
 async function latestRelease() {
   const nodes = document.querySelectorAll("[data-download]");
   const tags = document.querySelectorAll("[data-latest-tag]");
-  const fallback = "1.1.0";
+  const fallback = "1.1.1";
   try {
     const response = await fetch(`https://api.github.com/repos/${REPO}/releases/latest`);
     if (!response.ok) throw new Error("no release");

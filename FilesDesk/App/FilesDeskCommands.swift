@@ -26,6 +26,14 @@ struct FilesDeskCommands: Commands {
                 model?.removeSelected()
             }
 
+            Divider()
+
+            Button("刷新文件状态") {
+                model?.refreshFileStates()
+            }
+            .keyboardShortcut("r", modifiers: [.command])
+            .disabled(model?.files.isEmpty ?? true)
+
             Button("清空文件列表") {
                 model?.clearFiles()
             }

@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.1.1 — 2026-08-14
+
+- Live preview updates as soon as you type a rule
+- Refresh button reloads names, permissions, and missing files from disk
+- Numbering counts only files or folders in the current scope
+- More built-in presets: videos, WeChat photos, copy numbers, dates, sequential names
+
 ## 1.1.0 — 2026-08-14
 
 - Chinese-first UI, with files and folders in the same rename list

@@ -109,6 +109,9 @@ struct RulesPane: View {
             }
         }
         .background(Color(nsColor: .windowBackgroundColor))
+        .onChange(of: model.rules) {
+            model.updateRules()
+        }
     }
 }
 
@@ -211,15 +214,15 @@ struct RuleEditor: View {
 
         case .numbering:
             LabeledField("起始") {
-                TextField("1", value: $rule.parameters.numberingStart, format: .number)
+                TextField("1", text: intText($rule.parameters.numberingStart))
                     .textFieldStyle(.roundedBorder)
             }
             LabeledField("步长") {
-                TextField("1", value: $rule.parameters.numberingStep, format: .number)
+                TextField("1", text: intText($rule.parameters.numberingStep))
                     .textFieldStyle(.roundedBorder)
             }
             LabeledField("位数") {
-                TextField("3", value: $rule.parameters.numberingDigits, format: .number)
+                TextField("3", text: intText($rule.parameters.numberingDigits))
                     .textFieldStyle(.roundedBorder)
             }
             LabeledField("分隔符") {
@@ -311,4 +314,18 @@ private struct LabeledField<Content: View>: View {
             content
         }
     }
+}
+
+private func intText(_ value: Binding<Int>) -> Binding<String> {
+    Binding(
+        get: { String(value.wrappedValue) },
+        set: { newValue in
+            let digits = newValue.filter(\.isNumber)
+            if let parsed = Int(digits) {
+                value.wrappedValue = parsed
+            } else if digits.isEmpty {
+                value.wrappedValue = 0
+            }
+        }
+    )
 }

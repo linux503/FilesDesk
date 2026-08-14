@@ -137,6 +137,13 @@ const I18N = {
     changelog: {
       title: "更新日志",
       intro: "应用通过 Sparkle 读取此更新源。安装包发布在 GitHub Releases。",
+      v111Date: "2026 年 8 月 14 日",
+      v111Items: [
+        "输入规则后立即预览新名称",
+        "刷新按钮可重新读取磁盘上的文件状态",
+        "编号只对当前范围（文件或文件夹）连续计数",
+        "新增视频、微信图片、拷贝编号、日期、顺序编号等预设"
+      ],
       v110Date: "2026 年 8 月 14 日",
       v110Items: [
         "中文界面，文件和文件夹可一起重命名",
@@ -295,6 +302,13 @@ const I18N = {
     changelog: {
       title: "Changelog",
       intro: "The app checks this feed with Sparkle. Release archives are on GitHub.",
+      v111Date: "August 14, 2026",
+      v111Items: [
+        "New names update as soon as you type a rule",
+        "Refresh reloads names, permissions, and missing files from disk",
+        "Numbering counts only items in the current scope",
+        "More presets: videos, WeChat photos, copy numbers, dates, sequential names"
+      ],
       v110Date: "August 14, 2026",
       v110Items: [
         "Chinese-first UI; rename files and folders in one list",
