@@ -1,25 +1,27 @@
 const REPO = "linux503/FilesDesk";
 
+function bindDownload(version) {
+  const href = `./FilesDesk.dmg?v=${version}`;
+  document.querySelectorAll("[data-download]").forEach((node) => {
+    node.href = href;
+    node.setAttribute("download", "FilesDesk.dmg");
+  });
+  document.querySelectorAll("[data-latest-tag]").forEach((node) => {
+    node.textContent = version;
+  });
+}
+
 async function latestRelease() {
-  const nodes = document.querySelectorAll("[data-download]");
-  const tags = document.querySelectorAll("[data-latest-tag]");
   const fallback = "1.1.2";
+  bindDownload(fallback);
   try {
     const response = await fetch(`https://api.github.com/repos/${REPO}/releases/latest`);
     if (!response.ok) throw new Error("no release");
     const data = await response.json();
-    const zip = (data.assets || []).find((asset) => asset.name.endsWith(".zip"));
-    const href = zip ? zip.browser_download_url : data.html_url;
     const version = (data.tag_name || fallback).replace(/^v/, "");
-    nodes.forEach((node) => { node.href = href; });
-    tags.forEach((node) => { node.textContent = version; });
+    bindDownload(version);
   } catch {
-    nodes.forEach((node) => {
-      node.href = `https://github.com/${REPO}/releases`;
-    });
-    tags.forEach((node) => {
-      if (!node.textContent.trim()) node.textContent = fallback;
-    });
+    bindDownload(fallback);
   }
 }
 

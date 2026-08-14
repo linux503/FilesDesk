@@ -53,8 +53,11 @@ echo "$ARCHS_FOUND" | grep -qw x86_64
 DIST="$ROOT/build/dist"
 mkdir -p "$DIST"
 ZIP="$DIST/FilesDesk-$VERSION.zip"
-rm -f "$ZIP"
+DMG="$DIST/FilesDesk-$VERSION.dmg"
+rm -f "$ZIP" "$DMG"
 ditto -c -k --keepParent "$APP" "$ZIP"
+bash "$ROOT/scripts/make-dmg.sh" "$APP" "$DMG"
+cp "$DMG" "$ROOT/docs/FilesDesk.dmg"
 LENGTH="$(stat -f%z "$ZIP")"
 SIG="$(python3 "$ROOT/scripts/sign-update.py" "$KEY_FILE" "$ZIP")"
 
@@ -67,7 +70,7 @@ git push origin "$TAG"
 
 echo "==> GitHub Release"
 NOTES="$(awk "/^## $VERSION/{flag=1;next}/^## /{flag=0}flag" CHANGELOG.md | sed '/^$/d')"
-gh release create "$TAG" "$ZIP" \
+gh release create "$TAG" "$ZIP" "$DMG" \
   --title "FilesDesk $VERSION" \
   --notes "${NOTES:-FilesDesk $VERSION}"
 

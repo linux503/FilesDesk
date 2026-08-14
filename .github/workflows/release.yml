@@ -46,6 +46,10 @@ jobs:
           ditto -c -k --keepParent \
             "$APP" \
             "build/dist/FilesDesk-${VERSION}.zip"
+          bash scripts/make-dmg.sh \
+            "$APP" \
+            "build/dist/FilesDesk-${VERSION}.dmg"
+          cp "build/dist/FilesDesk-${VERSION}.dmg" docs/FilesDesk.dmg
 
       - name: Sign Sparkle update
         env:
@@ -67,11 +71,12 @@ jobs:
         run: |
           VERSION="${GITHUB_REF_NAME#v}"
           ZIP="build/dist/FilesDesk-${VERSION}.zip"
+          DMG="build/dist/FilesDesk-${VERSION}.dmg"
           NOTES="$(awk "/^## $VERSION/{flag=1;next}/^## /{flag=0}flag" CHANGELOG.md)"
           if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
-            gh release upload "$GITHUB_REF_NAME" "$ZIP" --clobber
+            gh release upload "$GITHUB_REF_NAME" "$ZIP" "$DMG" --clobber
           else
-            gh release create "$GITHUB_REF_NAME" "$ZIP" \
+            gh release create "$GITHUB_REF_NAME" "$ZIP" "$DMG" \
               --title "FilesDesk $VERSION" \
               --notes "${NOTES:-FilesDesk $VERSION}"
           fi
@@ -97,6 +102,6 @@ jobs:
             --length "$SPARKLE_LENGTH"
           git config user.name "github-actions"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add docs/appcast.xml
+          git add docs/appcast.xml docs/FilesDesk.dmg
           git commit -m "Sync Sparkle feed for $GITHUB_REF_NAME" || exit 0
           git push origin HEAD:main
