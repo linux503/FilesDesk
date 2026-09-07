@@ -967,3 +967,9 @@ a { color: inherit; text-decoration: none; }
   }
   .section-pillars, .section-rules, .section-workflow { padding: 56px 0; }
 }
+
+
+/* homepage refine */
+html { text-rendering: optimizeLegibility; }
+h1, .hero h1, .hero-title { text-wrap: balance; letter-spacing: -0.03em; }
+nav, .site-header, .topbar { backdrop-filter: blur(18px); }
