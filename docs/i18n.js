@@ -129,7 +129,7 @@ const I18N = {
       q4: "预设是什么？",
       a4: "预设是一组可复用的规则模板。内置摄影、截图、电商、文档、视频、微信图片、去掉拷贝编号、日期前缀、顺序编号等，也可保存自己的规则。",
       q5: "如何在线更新？",
-      a5: "应用使用 Sparkle，读取本站 appcast.xml，并从 GitHub Releases 下载已签名的更新包。",
+      a5: "应用使用 Sparkle，读取本站 appcast.xml，并下载已签名的更新包。",
       q6: "需要账号吗？",
       a6: "不需要。无登录、无云同步、无账号体系。",
       q7: "怎么把文件夹改成 4001、4002、4003？",
@@ -143,13 +143,13 @@ const I18N = {
       title: "隐私政策",
       p1: "FilesDesk 是本地工具，不创建账号，不上传你的文件。",
       p2: "文件名、路径、预设与重命名历史保存在你的 Mac 上（应用沙盒内）。仅对你主动添加的文件进行读取与重命名。",
-      p3: "若开启自动更新，Sparkle 会定期请求本站的公开更新源，并可能从 GitHub Releases 下载已签名的安装包。请求包含应用版本等常规 HTTP 信息。可在「设置」中关闭自动检查。",
+      p3: "若开启自动更新，Sparkle 会定期请求本站的公开更新源，并可能下载已签名的安装包。请求包含应用版本等常规 HTTP 信息。可在「设置」中关闭自动检查。",
       p4: "本站为静态页面，不使用追踪 Cookie，也不接入第三方统计。",
-      p5: "如有问题，请在 GitHub 提交 Issue。"
+      p5: "如有问题，请发邮件至 abbtoe@yandex.com。"
     },
     changelog: {
       title: "更新日志",
-      intro: "应用通过 Sparkle 读取此更新源。安装包发布在 GitHub Releases。",
+      intro: "应用通过 Sparkle 读取此更新源，并下载已签名的安装包。",
       v112Date: "2026 年 8 月 14 日",
       v112Items: [
         "新增规则：删除前几位，从文件名开头去掉指定个数的字符"
@@ -311,7 +311,7 @@ const I18N = {
       q4: "What are presets?",
       a4: "Presets are reusable rule templates. Built-ins include photos, screenshots, e-commerce, documents, videos, WeChat images, strip copy numbers, date prefix, sequential numbers, and more. You can also save your own.",
       q5: "How do in-app updates work?",
-      a5: "FilesDesk uses Sparkle to read the appcast on this site and install signed builds from GitHub Releases.",
+      a5: "FilesDesk uses Sparkle to read the appcast on this site and install signed updates.",
       q6: "Is there an account?",
       a6: "No. No login, cloud sync, or account system.",
       q7: "How do I rename folders to 4001, 4002, 4003?",
@@ -325,13 +325,13 @@ const I18N = {
       title: "Privacy",
       p1: "FilesDesk is a local utility. It does not create an account or upload your files.",
       p2: "File names, paths, presets, and rename history stay on your Mac inside the app sandbox.",
-      p3: "If automatic updates are enabled, Sparkle requests the public feed on this site and may download a signed archive from GitHub Releases.",
+      p3: "If automatic updates are enabled, Sparkle requests the public feed on this site and may download a signed update.",
       p4: "This site is static. No tracking cookies or third-party analytics.",
-      p5: "Questions? Open an issue on GitHub."
+      p5: "Questions? Email abbtoe@yandex.com."
     },
     changelog: {
       title: "Changelog",
-      intro: "The app checks this feed with Sparkle. Release archives are on GitHub.",
+      intro: "The app checks this feed with Sparkle and downloads a signed installer.",
       v112Date: "August 14, 2026",
       v112Items: [
         "New rule: drop the first N characters from a name"
